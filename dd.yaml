@@ -1,0 +1,27 @@
+Catalogs:
+- Name: Goods
+  Description: Goods
+  Attributes:
+  - Name: weight
+    type: Number
+    length: 15
+    dim: 0
+    format: ''
+    indexed: false
+  - Name: Fullname
+    type: String
+    length: 50
+    dim: 0
+    format: ''
+    indexed: false
+  TabularSections: []
+  Templates: []
+  Commands: []
+- Name: Customers
+  Description: Company customers
+  Attributes: []
+  TabularSections: []
+  Templates: []
+  Commands: []
+Documents: []
+InformationRegisters: []
