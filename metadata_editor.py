@@ -6,7 +6,7 @@ import uvicorn
 import yaml
 import os, json
 
-
+ConfigFile = 'metadata.yaml'
 data = {"Catalogs": [], "Documents": [], "InformationRegisters": []}
 
 newCatalog = {
@@ -48,7 +48,7 @@ newCatalog = {
 }
 data['Catalogs'].append(newCatalog)
 
-ConfigFile = 'dd.yaml'
+
 
 app = FastAPI()
 

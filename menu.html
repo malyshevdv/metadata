@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel=stylesheet href="./metadata/css/menu.css">
+
+
+    <script>
+    
+        var siteAdr = 'http://127.0.0.1:8000/'
+    
+
+        var list_id = [];
+        list_id.push('Catalogs');
+        list_id.push('Catalogs.Goods');
+        list_id.push('Catalogs.Goods.Attributes');
+        list_id.push('Catalogs.Goods.Attributes.color');
+        list_id.push('Catalogs.Goods.Attributes.secondname');
+        list_id.push('Catalogs.Goods.Attributes.pol');
+        list_id.push('Catalogs.Goods.Attributes.height');
+        list_id.push('Documents');
+       
+         
+        //var dd = fetch(siteAdr, {
+        //    method: "GET" // default, so we can ignore
+        //})
+
+        //fetch(siteAdr)
+        //.then((response) => response.json())
+        //.then((json) => console.log(json));
+
+        //fetch('https://reqbin.com/echo/get/json', {
+        
+        //fetch('http://127.0.0.1:8000', {
+        
+        let dd = []            
+/*
+        fetch('http://127.0.0.1:8000', 
+           {
+                headers: {
+               "method": "GET"
+               ,"Accept": "application/json"
+               ,"Access-Control-Allow-Origin": "*" 
+                }
+         })
+            .then(response => response.text())
+            .then(text => console.log(text))
+            .then(text => dd)
+
+        
+*/
+ 
+            
+
+
+
+        
+        
+function takeDateFromSite(adr) {
+    const xhr = new XMLHttpRequest();
+
+    let dd = {};
+
+    //xhr.open("GET", "http://127.0.0.1:8000");
+    xhr.open("GET", adr);
+    xhr.headers = {"Accept": "application/json"}
+    xhr.send();
+    xhr.responseType = "json";
+    xhr.onload = () => {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        //console.log(xhr.response);
+
+         dd = xhr.response // JSON.parse(xhr.response);
+
+        for (d of dd['Catalogs']) {
+            console.log(d);
+         
+        }
+
+      } else {
+        console.log(`Error: ${xhr.status}`);
+      }
+    };
+
+    return dd;
+
+
+}
+
+        function SelectCursor(myId){
+
+            takeDateFromSite(siteAdr) ;
+
+
+            document.getElementById("ss").innerHTML = myId;
+            dd = document.getElementById(myId);
+            
+            if (dd.getAttribute('opened') === 'false') {
+                dd.setAttribute('opened', "true");
+                
+                for (itemId of list_id) {
+                    if (itemId.search(myId) === 0)
+                    {
+                        dd = document.getElementById(itemId);
+                        dd.style.display = 'flex';
+                        
+                    }
+                    
+                }
+
+            }
+            else{
+                dd.setAttribute('opened', "false");
+
+                for (itemId of list_id) {
+                    if (itemId.search(myId) === 0)
+                    {
+                        dd = document.getElementById(itemId);
+                        dd.style.display = 'none';
+                        
+                    }
+                    
+                }   
+
+            }    
+           
+        }
+        
+        function SelectItem(myId){
+            
+            document.getElementById("ss").innerHTML = myId;
+            
+
+            dd = document.getElementById(myId);
+            let ss = 4;
+            
+            if (dd.getAttribute('selected') === 'false') {
+                dd.setAttribute('selected', 'true');
+                }
+            clearSelection(myId);    
+        }
+      
+        function clearSelection(ExeptId){
+
+            for (let myId of list_id) {
+                if (myId === ExeptId) {
+
+                }
+                else {
+                    var myElement = document.getElementById(myId);
+                    if ((myElement != null) && (myElement.getAttribute('selected')==='true')){
+                        myElement.setAttribute('selected','false');
+                    }
+                }
+                
+            }
+        }
+    
+    </script>
+    
+</head>
+
+
+
+<body>
+    
+    <div type="none" class="Tree">ROOT
+
+        <div class="tree-item"> 
+            <div class="tree-level-padding-1"></div>
+            <div id='Catalogs.' class="tree-cursor" opened="true" onclick="SelectCursor(id)"></div>
+            <div class="tree-catalog-icon"></div>
+            <div id='Catalogs' class="tree-item" selected="true" onclick="SelectItem(id)">Catalogs</div>
+
+        </div>
+
+        <div class="tree-item">
+                <div class="tree-level-padding-2"></div>
+                <div id='Catalogs.Goods.' class="tree-cursor" opened="true" onclick="SelectCursor(id)"></div>
+                <div class="tree-catalog-icon"></div>
+                <div id='Catalogs.Goods' class="tree-item" selected="false" onclick="SelectItem(id)">Goods</div>
+        </div>    
+    
+        <div class="tree-item"">
+            <div class="tree-level-padding-3"></div>
+            <div id='Catalogs.Goods.Attributes.' class="tree-cursor" opened="true" onclick="SelectCursor(id)"></div>
+            <div class="tree-attributes-icon"></div>
+            <div id='Catalogs.Goods.Attributes' class="tree-item" selected="false" onclick="SelectItem(id)">Attributes</div>
+        </div>    
+
+        <div class="tree-item"> 
+            <div class="tree-level-padding-5"></div>
+            <div id='Catalogs.Goods.Attributes.' class="tree-cursor"></div>
+            <div class="tree-attributes-icon"></div>
+            <div id='Catalogs.Goods.Attributes.color' class="tree-item" selected="false" onclick="SelectItem(id)">color</div>
+        </div> 
+        
+        <div class="tree-item"> 
+            <div class="tree-level-padding-5"></div>
+            <div id='Catalogs.Goods.Attributes.' class="tree-cursor"></div>
+            <div class="tree-attributes-icon"></div>
+            <div id='Catalogs.Goods.Attributes.secondname' class="tree-item" selected="false" onclick="SelectItem(id)">secondname</div>
+        </div> 
+        
+        <div class="tree-item"> 
+            <div class="tree-level-padding-5"></div>
+            <div id='Catalogs.Goods.Attributes.' class="tree-cursor"></div>
+            <div class="tree-attributes-icon"></div>
+            <div id='Catalogs.Goods.Attributes.pol' class="tree-item" selected="false" onclick="SelectItem(id)">pol</div>
+        </div> 
+        
+        <div class="tree-item"> 
+            <div class="tree-level-padding-5"></div>
+            <div id='Catalogs.Goods.Attributes.' class="tree-cursor"></div>
+            <div class="tree-attributes-icon"></div>
+            <div id='Catalogs.Goods.Attributes.height' class="tree-item" selected="false" onclick="SelectItem(id)">height</div>
+        </div> 
+        
+        <div class="tree-item"> 
+            <div class="tree-level-padding-3"></div>
+            <div id='Catalogs.Goods.TabularSections.' class="tree-cursor" opened="true"></div>
+            <div class="tree-tabularsection-icon"></div>
+            <div id='Catalogs.Goods.TabularSections' class="tree-item" selected="false" onclick="SelectItem(id)">Tabular sections</div>
+        </div> 
+        
+        
+        <div id="Catalogs.Pricees"  class="catalog-item" selected="true" opened="true" onclick="SelectItem(this.id)">Pricees</div> 
+        <div id="Catalogs.AdditionalProperty" class="catalog-item" selected="true" opened="true" onclick="SelectItem(this.id)">AdditionalProperty</div> 
+        
+        <div  class="form-item" selected="true" opened="true">
+            Forms
+        </div>
+        <div>MainForm</div> 
+        
+        <div  class="comand-item" selected="true" opened="true">
+            Commands
+        </div>    
+      
+        <div class="template-item" selected="true" opened="true">
+            Templates
+        </div>    
+        <div> WarehousesOrder</div>
+      
+        
+        <div  class="form-item" selected="false" opened="true">Currency</div>
+        <div  class="form-item" selected="false" opened="true">Customers</div>
+        
+        <div id="Documents" class="document-item" selected="false" opened="true"  onclick="SelectItem(id)"> 
+            <a">Documents</a>
+        </div>
+        <div class="document-item" selected="false"  opened="true"> 
+            <a">Chek</a>
+        </div> 
+        
+
+        <div class="informationregister-item" selected="false" opened="true"> 
+           <a">Information registers</a>
+       </div>
+       <div class="informationregister-item" selected="false"  opened="true"> 
+           <a">UsersDocuments</a>
+       </div>
+       
+
+
+
+    </div>
+
+    <fieldset>
+        <legend>Total</legend>
+         <p><label>Customer name: <input id="ss2"></label></p>
+         <span id="ss">5</span>
+    </fieldset>
+
+
+</body>
+</html>
