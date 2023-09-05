@@ -4,274 +4,300 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel=stylesheet href="./metadata/css/menu.css">
+    <link href="{{ url_for('metadata', path='/menu.css') }}" rel="stylesheet">
+
+<script type="text/javascript" src="http://127.0.0.1:8084/metadata/src/tree.js"> </script>   
+<script type="text/javascript" src="http://127.0.0.1:8084/metadata/src/property.js"> </script>   
+<script type="text/javascript" src="http://127.0.0.1:8084/metadata/src/myhttp.js">  </script>  
+<script>
+  
+const portNumber = '8084'    
+  
+
+const PROP_NAME = 'Name'
+const PROP_SYNONYME = 'Synonyme'
+const PROP_COMMENT = 'Comment'
+
+const PROP_Properties = 'Properties'
+const PROP_Attributes = 'Attributes'
+const PROP_Tabs = 'TabularSections'
+const PROP_Templetes = 'Templates'
+const PROP_Commands = 'Commands'
+const PROP_Forms = 'Forms'
 
 
-    <script>
+const PROP_VALUE = 'Value'
+const PROP_DEFVALUE = 'DefaultValue'
+const PROP_TYPE = 'Type'
+
     
-        var siteAdr = 'http://127.0.0.1:8000/'
+
+function createTree1() {
+    mytree1.needRedrawTree = true;
+    takeDateFromSite(SITE_ADRESS + 'tree', 'GET','RedrawTree','mytree1');
+}
+
+function add_answer() {
+   
+    var question_container = document.getElementById("my_form");
     
+    var input_ans = document.createElement("input");
+    input_ans.setAttribute("type", "text");
+    input_ans.setAttribute("class", "answer_input");
+    input_ans.innerHTML = 'fff';
 
-        var list_id = [];
-        list_id.push('Catalogs');
-        list_id.push('Catalogs.Goods');
-        list_id.push('Catalogs.Goods.Attributes');
-        list_id.push('Catalogs.Goods.Attributes.color');
-        list_id.push('Catalogs.Goods.Attributes.secondname');
-        list_id.push('Catalogs.Goods.Attributes.pol');
-        list_id.push('Catalogs.Goods.Attributes.height');
-        list_id.push('Documents');
-       
-         
-        //var dd = fetch(siteAdr, {
-        //    method: "GET" // default, so we can ignore
-        //})
+    question_container.appendChild(input_ans);
 
-        //fetch(siteAdr)
-        //.then((response) => response.json())
-        //.then((json) => console.log(json));
+}
 
-        //fetch('https://reqbin.com/echo/get/json', {
-        
-        //fetch('http://127.0.0.1:8000', {
-        
-        let dd = []            
-/*
-        fetch('http://127.0.0.1:8000', 
-           {
-                headers: {
-               "method": "GET"
-               ,"Accept": "application/json"
-               ,"Access-Control-Allow-Origin": "*" 
-                }
-         })
-            .then(response => response.text())
-            .then(text => console.log(text))
-            .then(text => dd)
+function updateForm(newStr) {
 
-        
-*/
- 
-            
+    let newDog = document.createElement('div')
+    newDog.innerHTML = 'dfddfdfdf'
+
+    let  span = document.createElement("span");
+    span.innerHTML = "Add question";
+
+    newDog.appendChild(span);
+
+    const h2 = document.createElement('h2');
+    h2.textContent = 'My name is Roviel and i love playing and eating.';
+
+    newDog.style.display ='block';
+    newDog.appendChild(h2);
+}        
+   
+const ddd = function dd(res){
+    console.log(res)
+    //alert('Hello')
+    return
 
 
+    if (xhr.readyState == 4 && xhr.status == 200) {
 
-        
-        
-function takeDateFromSite(adr) {
-    const xhr = new XMLHttpRequest();
-
-    let dd = {};
-
-    //xhr.open("GET", "http://127.0.0.1:8000");
-    xhr.open("GET", adr);
-    xhr.headers = {"Accept": "application/json"}
-    xhr.send();
-    xhr.responseType = "json";
-    xhr.onload = () => {
-      if (xhr.readyState == 4 && xhr.status == 200) {
-        //console.log(xhr.response);
-
-         dd = xhr.response // JSON.parse(xhr.response);
-
-        for (d of dd['Catalogs']) {
-            console.log(d);
-         
-        }
-
-      } else {
+        Struct = JSON.parse(res.json());
+        TakeAction(Struct, options.headers);
+        //print(Struct)    
+    } 
+    else {
         console.log(`Error: ${xhr.status}`);
-      }
-    };
+    }
+    
+}
 
-    return dd;
+function takeDateFromSite_Fetch(adr, Method='GET', Action='', Component='', BodySctructure=undefined) {
+
+    // create a JSON object
+    const json = BodySctructure
+  
+    // request options
+    const options = {
+        method: Method,
+        body: JSON.stringify(json),
+        headers: {
+            "Accept": "application/json", 
+            "Content-Type": "application/json", 
+            'Action' : Action, 
+            'Component': Component
+        }
+    }
+  
+    // send post request
+    fetch(adr, options)
+      .then(res => res.json())
+      .then(res => ddd(res))
+      .catch(err => console.error(err))
 
 
 }
 
-        function SelectCursor(myId){
-
-            takeDateFromSite(siteAdr) ;
 
 
-            document.getElementById("ss").innerHTML = myId;
-            dd = document.getElementById(myId);
-            
-            if (dd.getAttribute('opened') === 'false') {
-                dd.setAttribute('opened', "true");
-                
-                for (itemId of list_id) {
-                    if (itemId.search(myId) === 0)
-                    {
-                        dd = document.getElementById(itemId);
-                        dd.style.display = 'flex';
-                        
-                    }
-                    
-                }
 
-            }
-            else{
-                dd.setAttribute('opened', "false");
 
-                for (itemId of list_id) {
-                    if (itemId.search(myId) === 0)
-                    {
-                        dd = document.getElementById(itemId);
-                        dd.style.display = 'none';
-                        
-                    }
-                    
-                }   
 
-            }    
-           
-        }
+//==========  HTTP-method   =============================================================
+
+function takeDateFromSite(adr, Method='GET', Action='', Component='', BodySctructure=undefined) {
+    //const xhr = new XMLHttpRequest();
+
+    jsonData = ''
+    if (BodySctructure != undefined) {
+        //jsonData = JSON.stringify(BodySctructure)
+        jsonData = BodySctructure
         
-        function SelectItem(myId){
-            
-            document.getElementById("ss").innerHTML = myId;
-            
+    }
+    //xhr.open("GET", "http://127.0.0.1:8000");
+    xhr.open(Method, adr);
+    xhr.headers = {
+        "Accept": "application/json", 
+        "Content-Type": "application/json", 
+        'Action' : Action, 
+        'Component': Component
+    }
 
-            dd = document.getElementById(myId);
-            let ss = 4;
-            
-            if (dd.getAttribute('selected') === 'false') {
-                dd.setAttribute('selected', 'true');
-                }
-            clearSelection(myId);    
-        }
-      
-        function clearSelection(ExeptId){
+    xhr.setRequestHeader('Content-Type', 'application/json')
 
-            for (let myId of list_id) {
-                if (myId === ExeptId) {
 
-                }
-                else {
-                    var myElement = document.getElementById(myId);
-                    if ((myElement != null) && (myElement.getAttribute('selected')==='true')){
-                        myElement.setAttribute('selected','false');
-                    }
-                }
-                
-            }
-        }
+    if (jsonData === '') {
+        xhr.send();
+    } else {
+        //xhr.send(jsonData, "/json-handler");
+        xhr.send(jsonData);
+        
+        //xhr.send(JSON.stringify({ email: "hello@user.com"}));
+    }
     
-    </script>
     
+    xhr.responseType = "json";
+    xhr.onload = () => {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+
+            Struct = JSON.parse(xhr.response);
+            TakeAction(Struct, xhr.headers);
+           //print(Struct)    
+        } 
+        else {
+            console.log(`Error: ${xhr.status}`);
+        } //end of onload
+    }    
+}
+
+function ShowProperty_Action(myId){
+    
+    myProp.id = myId;
+
+    let words = myId.split('.')
+    
+    let FieldName = words[0]      //1
+    let MetadataType = words[1]   //2 - Catalogs, Documents, InformationRegisters
+    let MetadataName = words[2]   //3  name of previous objects
+    let SubType1 = words[3]       //4  Attributes, TabularSections, Forms, Commands, Templates
+    let SubType2 = words[4]       //5  name of previous objects
+    let SubType3 = words[5]       //6  name of Attributes of tabular sections
+    let SubType4 = words[6]       //7  
+
+    let adr = ''
+
+    //   Logical OR (||)
+
+
+    if (words.length === 3) {
+       adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/Properties';
+    }
+
+    if (words.length === 5) {
+        adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/' + SubType1 + '/' + SubType2 + '/Properties' ;
+    }    
+   
+    
+    if (words.length === 6) {
+        if (SubType1==='TabularSections'){
+            adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/' + SubType1 + '/' + SubType2 + '/Attributes/' + SubType3 ;
+        }
+    }    
+
+    if (words.length === 7) {
+        if (SubType1==='TabularSections'){
+            adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/' + SubType1 + '/' + SubType2 + '/Attributes/' + SubType4 ;
+        }
+    }    
+
+
+   
+
+    if (adr ==='') {
+        ClearProperty()
+    }
+    else {
+        takeDateFromSite(adr, Method='GET', Action='RedrawProperty', Component='property')
+    }    
+
+}  
+
+function TakeAction(Struct, Headers){
+    
+    let Action = Headers.Action;
+
+    if (Action==='RedrawTree') {
+        mytree1.mydata = Struct.Tree;
+        for (key in mytree1.mydata.Catalogs) {
+            res = mytree1.mydata.Catalogs[key]
+            console.log(res);
+        }
+        if (mytree1.needRedrawTree) {
+            //TreeRedraw('mytree1');
+            RedrawTree(mytree1);
+        };    
+    }
+
+    if (Action==='RedrawProperty'){
+        ShowProperty(myProp, Struct, Headers);
+    }
+
+}
+
+//========== MAIN PROGRAM ================
+let SITE_ADRESS = 'http://127.0.0.1:' + portNumber + '/';
+const xhr = new XMLHttpRequest();
+
+let mytree1 = new TreeClass('mytree1');
+let myProp = new PropertyWin('property');
+console.log(mytree1.mydata);
+
+
+
+</script>
+<noscript>Sorry, your browser does not support JavaScript!</noscript>
+
 </head>
 
 
 
 <body>
-    
-    <div type="none" class="Tree">ROOT
+    <input type="button" title="Press" onclick="createTree1()"> 
 
-        <div class="tree-item"> 
-            <div class="tree-level-padding-1"></div>
-            <div id='Catalogs.' class="tree-cursor" opened="true" onclick="SelectCursor(id)"></div>
-            <div class="tree-catalog-icon"></div>
-            <div id='Catalogs' class="tree-item" selected="true" onclick="SelectItem(id)">Catalogs</div>
 
+    <b>Tree</b>    
+
+    <div class="flex group-horizontal">
+        <div id = "mytree1" class="md-tree">
+            <legend>mytree1</legend>
+        </div>
+        
+        <div id = "mytree3" class="area">
         </div>
 
-        <div class="tree-item">
-                <div class="tree-level-padding-2"></div>
-                <div id='Catalogs.Goods.' class="tree-cursor" opened="true" onclick="SelectCursor(id)"></div>
-                <div class="tree-catalog-icon"></div>
-                <div id='Catalogs.Goods' class="tree-item" selected="false" onclick="SelectItem(id)">Goods</div>
-        </div>    
-    
-        <div class="tree-item"">
-            <div class="tree-level-padding-3"></div>
-            <div id='Catalogs.Goods.Attributes.' class="tree-cursor" opened="true" onclick="SelectCursor(id)"></div>
-            <div class="tree-attributes-icon"></div>
-            <div id='Catalogs.Goods.Attributes' class="tree-item" selected="false" onclick="SelectItem(id)">Attributes</div>
-        </div>    
+        <div class="md-property">
+            <div id = "property2" class="properties2"> 
+              <a class="logval">ddd</a>  
+            </div>
 
-        <div class="tree-item"> 
-            <div class="tree-level-padding-5"></div>
-            <div id='Catalogs.Goods.Attributes.' class="tree-cursor"></div>
-            <div class="tree-attributes-icon"></div>
-            <div id='Catalogs.Goods.Attributes.color' class="tree-item" selected="false" onclick="SelectItem(id)">color</div>
-        </div> 
-        
-        <div class="tree-item"> 
-            <div class="tree-level-padding-5"></div>
-            <div id='Catalogs.Goods.Attributes.' class="tree-cursor"></div>
-            <div class="tree-attributes-icon"></div>
-            <div id='Catalogs.Goods.Attributes.secondname' class="tree-item" selected="false" onclick="SelectItem(id)">secondname</div>
-        </div> 
-        
-        <div class="tree-item"> 
-            <div class="tree-level-padding-5"></div>
-            <div id='Catalogs.Goods.Attributes.' class="tree-cursor"></div>
-            <div class="tree-attributes-icon"></div>
-            <div id='Catalogs.Goods.Attributes.pol' class="tree-item" selected="false" onclick="SelectItem(id)">pol</div>
-        </div> 
-        
-        <div class="tree-item"> 
-            <div class="tree-level-padding-5"></div>
-            <div id='Catalogs.Goods.Attributes.' class="tree-cursor"></div>
-            <div class="tree-attributes-icon"></div>
-            <div id='Catalogs.Goods.Attributes.height' class="tree-item" selected="false" onclick="SelectItem(id)">height</div>
-        </div> 
-        
-        <div class="tree-item"> 
-            <div class="tree-level-padding-3"></div>
-            <div id='Catalogs.Goods.TabularSections.' class="tree-cursor" opened="true"></div>
-            <div class="tree-tabularsection-icon"></div>
-            <div id='Catalogs.Goods.TabularSections' class="tree-item" selected="false" onclick="SelectItem(id)">Tabular sections</div>
-        </div> 
-        
-        
-        <div id="Catalogs.Pricees"  class="catalog-item" selected="true" opened="true" onclick="SelectItem(this.id)">Pricees</div> 
-        <div id="Catalogs.AdditionalProperty" class="catalog-item" selected="true" opened="true" onclick="SelectItem(this.id)">AdditionalProperty</div> 
-        
-        <div  class="form-item" selected="true" opened="true">
-            Forms
+            <table id = "property" class="properties">
+                <tr>
+                    <th>Name</th>
+                    <th class="value-column">Value</th>
+                </tr>    
+                
+
+            </table> 
+            
+            <fieldset>
+                <legend>Total</legend>
+                <p>
+                <label>
+                Customer name: 
+                <input id="ss2" type="checkbox" 
+                </label>
+                </p>
+                <span id="ss">5</span>
+            </fieldset>
         </div>
-        <div>MainForm</div> 
-        
-        <div  class="comand-item" selected="true" opened="true">
-            Commands
-        </div>    
-      
-        <div class="template-item" selected="true" opened="true">
-            Templates
-        </div>    
-        <div> WarehousesOrder</div>
-      
-        
-        <div  class="form-item" selected="false" opened="true">Currency</div>
-        <div  class="form-item" selected="false" opened="true">Customers</div>
-        
-        <div id="Documents" class="document-item" selected="false" opened="true"  onclick="SelectItem(id)"> 
-            <a">Documents</a>
-        </div>
-        <div class="document-item" selected="false"  opened="true"> 
-            <a">Chek</a>
-        </div> 
-        
-
-        <div class="informationregister-item" selected="false" opened="true"> 
-           <a">Information registers</a>
-       </div>
-       <div class="informationregister-item" selected="false"  opened="true"> 
-           <a">UsersDocuments</a>
-       </div>
-       
-
-
 
     </div>
 
-    <fieldset>
-        <legend>Total</legend>
-         <p><label>Customer name: <input id="ss2"></label></p>
-         <span id="ss">5</span>
-    </fieldset>
+
+    
 
 
 </body>
