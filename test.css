@@ -1,0 +1,52 @@
+.everybody{
+    background: green;
+}
+
+.a-good-time{
+    background: lightblue;
+}
+
+:root {
+    --lerp-0: 1;
+    --lerp-1: 0.5625;
+    --lerp-2: 0.25;
+    --lerp-3: 0.0625;
+    --lerp-4: 0;
+  }
+
+  .blocks {
+    display: flex;
+  }
+  .block {
+    transition: flex 0.2s;
+    flex: calc(0.2 + (var(--lerp, 0) * 1.5));
+  }
+  .block__item {
+    transition: transform 0.2s;
+    transform: translateY(calc(var(--lerp) * -75%));
+  }
+
+  :is(.block:hover, .block:focus-visible) {
+    --lerp: var(--lerp-0);
+    z-index: 5;
+  }
+  .block:has( + :is(.block:hover, .block:focus-visible)),
+  :is(.block:hover, .block:focus-visible) + .block {
+    --lerp: var(--lerp-1);
+    z-index: 4;
+  }
+  .block:has( + .block + :is(.block:hover, .block:focus-visible)),
+  :is(.block:hover, .block:focus-visible) + .block + .block {
+    --lerp: var(--lerp-2);
+    z-index: 3;
+  }
+  .block:has( + .block + .block + :is(.block:hover, .block:focus-visible)),
+  :is(.block:hover, .block:focus-visible) + .block + .block + .block {
+    --lerp: var(--lerp-3);
+    z-index: 2;
+  }
+  .block:has( + .block + .block + .block + :is(.block:hover, .block:focus-visible)),
+  :is(.block:hover, .block:focus-visible) + .block + .block + .block + .block {
+    --lerp: var(--lerp-4);
+    z-index: 1;
+  }  

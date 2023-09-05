@@ -62,7 +62,7 @@
 
 
 .tree-catalog-icon{
-    background-image:  url("images/enterprise/catalog.png");
+    background-image:  url("./catalog.png");
     background-repeat: no-repeat;
     width : 18px;
 }

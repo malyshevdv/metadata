@@ -1,0 +1,1 @@
+uviconr metadata_editor:app --reload
