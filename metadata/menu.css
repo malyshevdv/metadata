@@ -215,11 +215,25 @@ th{
     padding: 4px;
     flex-wrap: nowrap; 
     background-image: url(/metadata/create.png);
+    background-repeat: no-repeat;
+    width : 18px;
     
 }
+
+
 .bar-item:hover{
     padding: 4px;
     
     background: gray; 
     flex-wrap: nowrap;  
+}
+
+.input_number{
+    text-align: right;
+}
+
+.select_button{
+    width: 16;
+    height: 16;
+    background-color: blue;
 }
