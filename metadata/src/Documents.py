@@ -99,11 +99,11 @@ def CreateDemo(Name : str):
 
     newItem['Attributes']['Fullname'] = {
         "Name": {Types.PROP_VALUE:"Fullname"},
-        "type": {Types.PROP_VALUE:'String'},
-        "length": {Types.PROP_VALUE:50},
-        "dim": {Types.PROP_VALUE:0},
-        "format": {Types.PROP_VALUE:""},
-        "indexed": {Types.PROP_VALUE:False}
+        "Type": {Types.PROP_VALUE:'String'},
+        "Length": {Types.PROP_VALUE:50},
+        "Dim": {Types.PROP_VALUE:0},
+        "Format": {Types.PROP_VALUE:""},
+        "Indexed": {Types.PROP_VALUE:False}
     }
 
     # TABULAR

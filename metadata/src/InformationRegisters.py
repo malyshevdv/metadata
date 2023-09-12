@@ -1,4 +1,3 @@
-import metadata.src.Types as Types
 import metadata.src.Catalogs as Catalogs
 import metadata.src.Types as Types
 

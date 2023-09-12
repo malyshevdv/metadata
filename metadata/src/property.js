@@ -32,30 +32,22 @@ function ShowProperty(Obj, Struct, Headers) {
         new_td.innerHTML = PropertyName
         new_tr.appendChild(new_td)
 
+        
+        if (FieldStruct.Selectable === true) {
+            new_input = document.createElement('select');
+            new_input.setAttribute('width', "100%")
 
-        new_input = document.createElement('input');
-        if (FieldStruct['Type'] === 'String'){
-            new_input.setAttribute('type', 'text')
-        }
-        else if (FieldStruct['Type'] === 'Boolean'){
-            new_input.setAttribute('type', 'checkbox')
-        } 
-        else if (FieldStruct['Type'] === 'Integer'){
-            new_input.setAttribute('type', 'number')
+            for (option_item of FieldStruct.SelectList){
+                new_option = document.createElement('option');
+                new_option.value = option_item
+                new_option.innerHTML = option_item
+
+                new_input.appendChild(new_option)
+            }    
+
         }
         else {
-            new_input.setAttribute('type', 'text')
-        }
-
-        if (PropertyName in Struct[PROP_VALUE]) {
-            if ('Value' in Struct[PROP_VALUE][PropertyName]) {
-                let TempValue = Struct[PROP_VALUE][PropertyName][PROP_VALUE]
-                if (TempValue === undefined) {}
-                else
-                {
-                    new_input.setAttribute('value', TempValue)
-                }
-            }
+            new_input = document.createElement('input');
         }
 
         new_input.addEventListener("change", updateValue);
@@ -63,6 +55,52 @@ function ShowProperty(Obj, Struct, Headers) {
         new_input.setAttribute('PropertyName', PropertyName)
         new_input.setAttribute('Name', PropertyName)
 
+        let TempValue = undefined;
+
+        if (PropertyName in Struct[PROP_VALUE]) {
+            if ('Value' in Struct[PROP_VALUE][PropertyName]) {
+                TempValue = Struct[PROP_VALUE][PropertyName][PROP_VALUE]
+            }
+            if (Struct[PROP_VALUE][PropertyName]['Edidable'] == true ) {
+
+
+            }
+
+
+        }
+
+        if (FieldStruct['Type'] === 'String'){
+            new_input.type = 'text'
+            
+            if (TempValue != undefined) {
+                new_input.value = TempValue
+            }
+        }
+        else if (FieldStruct['Type'] === 'Boolean'){
+            new_input.type = 'checkbox'
+            if (TempValue != undefined) {
+                new_input.checked = TempValue
+            }
+        } 
+        else if (FieldStruct['Type'] === 'Integer'){
+            new_input.type = 'number'
+            //new_input.setAttribute('align', 'right')
+            new_input.className = 'input_number'
+            
+            if (TempValue != undefined) {
+                new_input.valueAsNumber = TempValue
+            }
+        }
+        else {
+            new_input.type = 'text'
+            if (TempValue != undefined) {
+                new_input.value = TempValue
+            }
+        }
+
+        
+
+        
         new_td = document.createElement('td');
         new_td.className = 'value-column';
         
@@ -84,9 +122,30 @@ function updateValue(e) {
     //
     //sent new value to server
     //
-
+    
+    let PropName  = e.srcElement.id  //"property.input.Comment"
+    let words2 = PropName.split('.')
+    PropName = words2[2]
+    
+    let newValue2 = e.target.value
+    if (e.target.type === 'checkbox') {
+        if (e.target.checked) {
+            newValue2 = 'True'
+            newValue2 = true
+            //newValue2 = 1
+        } else {
+            newValue2 = 'False'
+            newValue2 = false
+            //newValue2 = 0
+        }
+    }
+    
+    if (e.target.type === 'number') {
+        newValue2 = e.target.valueAsNumber
+    }
+    
     log2 = document.getElementById('ss')
-    log2.innerHTML = e.target.value;
+    log2.innerHTML = newValue2;
 
     
     let words = myProp.object_name.split('.')
@@ -99,41 +158,63 @@ function updateValue(e) {
     let SubType3 = words[5]       //6  name of Attributes of tabular sections
     let SubType4 = words[6]       //7  
 
-    let PropName = e.srcElement.id  //"property.input.Comment"
-    let words2 = PropName.split('.')
-    PropName = words2[2]
-
+    
 
 
     let newValue = {
         "Name" : "sdsdsd",
-        "Value" :  "" + e.target.value,
-        "Path"  : "" + myProp.object_name,  //"mytree1.Catalogs.Goods"
-        'PropName' : PropName ,
+        "Value" :  '' + newValue2,
+        "ValueType" :  e.target.type,
+        "ValueAsBool" :  false,
+        "ValueAsNumber" :  0,
+        
+        "PropertyPath"  : "" + myProp.object_name,  //"mytree1.Catalogs.Goods"
+        'PropertyName' : PropName ,
+        'new_id' : '',
         "res" : ''  
         }
 
-
+    if (e.target.type === 'checkbox') {    
+        newValue.ValueAsBool = newValue2 
+    }    
+    if (e.target.type === 'number') {    
+        newValue.ValueAsNumber = newValue2 
+    }    
 
     let adr = ''
 
+    let new_id = myProp.object_name.split('.')
+
     if (words.length === 3) {
-        adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/Property/' + PropName;
+        adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/Properties/' + PropName;
     }
     else if (words.length === 5) {
-        adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/' + SubType1 + '/' + PropName;
+        adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/' + SubType1 + '/' + SubType2;
+
         if (SubType1 === 'TabularSections') {
-            adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/' + SubType1 + '/Properties/' + PropName;
+            adr = adr + '/Properties/' + PropName;
         }
+        
     }    
     else if (words.length === 7) {
         adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/' + SubType1 + '/' + SubType2 + '/' + SubType3 + '/' +SubType4;
     }    
    
+    if (PropName === 'Name') {
+        new_id[words.length-1] = '' + newValue2
+    }
+
+    new_id = new_id.join('.');
+    newValue.new_id = new_id;
+
     if (adr ==='') {
        // ClearProperty()
     }
     else {
+        console.log('save property:')
+        console.log(adr)
+        console.log(newValue)
+        
         takeDateFromSite_Fetch(adr, Method='POST', Action='SaveNewValue', Component='property', newValue)
     }    
 

@@ -30,7 +30,7 @@ import metadata.src.Types as Types
 
 ConfigFile = 'metadata.yaml'
 data = {"Catalogs": [], "Documents": [], "InformationRegisters": []}
-portNumber = '8084'
+portNumber = '8082'
 
 data = GetTestTree()
 
@@ -65,11 +65,13 @@ async def read_root(request: Request):
     #dd = template.render(context)
     #url_for = ""
     proba2  = "HELLO PROBAB"
-    return template.TemplateResponse('menu.html',context={"ddd":'ddd', "request":request, 'proba' : proba})
-    return dd
-    #return templates.TemplateResponse('menu.html', context={"ddd":'ddd', "request":request})
-
-    return {"Hello": "World"}
+    return template.TemplateResponse('menu.html',
+                                     context={
+                                         "ddd":'ddd',
+                                         "request":request,
+                                         'proba' : proba
+                                     }
+                                     )
 
 @app.get("/tree/")  #******************************************************
 async def read_tree(request: Request):
@@ -110,20 +112,27 @@ async def read_properties(MetadataType: str, MetadataName : str, request: Reques
            }
     return json.dumps(res)
 
-class Item(BaseModel):
+class IgnoredType:
+    pass
+
+class EditItem(BaseModel):
     Name: str = ''
-    Value : str = ''
-    Path : str = ''
-    PropName : str = ''
+    Value: str = ''
+    ValueType: str = ''
+    ValueAsBool: bool = False
+    ValueAsNumber: int = 0
+    PropertyPath : str = ''
+    PropertyName : str = ''
+    new_id : str = ''
     Res : str = ''
     def setRes(self, newRes):
         self.res = newRes
 
-    def setNew(self, Name : str, Value : str, Path : str, PropName : str):
+    def setNew(self, Name : str, Value : str, PropertyPath : str, PropertyName : str):
         self.Name = Name
         self.Value = Value
-        self.Path = Path
-        self.PropName = PropName
+        self.PropertyPath = PropertyPath
+        self.PropertyName = PropertyName
 
 #
 #
@@ -131,47 +140,120 @@ class Item(BaseModel):
 #
 
 #
-@app.post("/{MetadataType}/{MetadataName}/Property/{PropertyName}/ввавав")  #*********************************************
-async def edit_one_MetadataName_property_enter3(MetadataType: str, MetadataName: str, PropertyName: str, newValue : Item) :
-
-   # print(newValue)
-    edit_one_MetadataName_property(newValue)
-
-    return newValue
-    #return JSON.dumps({'res' : True, 'dumps' : ''})
-
 @app.post("/{MetadataType}/{MetadataName}/{ItemType}/{PropertyName}")  #*********************************************
-async def edit_one_MetadataName_property_enter33(
+async def edit_one_MetadataName_property_enter_3_level(
+        MetadataType: str,
+        MetadataName: str,
+        ItemType : str,
+        PropertyName: str,
+        newValue : EditItem) :
+
+    # sample Catalogs.Goods.Property.Synonim
+   new_struct = {
+       'MetadataType' : MetadataType,
+       'MetadataName' : MetadataName,
+       'ItemType' : ItemType,
+       'PropertyName' : PropertyName,
+       'LevelType': '',
+       'LevelPropName': ''
+    }
+
+   edit_one_MetadataName_property(newValue, new_struct)
+
+   return newValue
+@app.post("/{MetadataType}/{MetadataName}/{ItemType}/{PropertyName}/{LevelType}/{LevelPropName}")  # *********************************************
+async def edit_one_MetadataName_property_enter_5_level(
         MetadataType: str,
         MetadataName: str,
         ItemType: str,
         PropertyName: str,
-        newValue : Item) :
+        LevelType: str,
+        LevelPropName: str,
+        newValue: EditItem):
+    # sample Catalogs.Goods.Property.Synonim
+    new_struct = {
+        'MetadataType': MetadataType,
+        'MetadataName': MetadataName,
+        'ItemType': ItemType,
+        'PropertyName': PropertyName,
+        'LevelType': LevelType,
+        'LevelPropName': LevelPropName
+    }
 
-   # print(newValue)
-   # edit_one_MetadataName_property(newValue)
-    newValue.res = '5'
+    edit_one_MetadataName_property(newValue, new_struct)
+
     return newValue
-    #return JSON.dumps({'res' : True, 'dumps' : ''})
 
-def edit_one_MetadataName_property(newValue : Item):
 
-    words = newValue.Path.split('.')
-    MetadataType = words[1]
-    MetadataName = words[2]
+def edit_one_MetadataName_property(newValue : EditItem, new_struct : dict):
 
-    if not newValue.PropName in data[words[1]][words[2]]['Properties'] :
-        data[MetadataType][MetadataName]['Properties'][newValue.PropName] = {}
 
-    data[MetadataType][MetadataName]['Properties'][newValue.PropName]['Value'] = newValue.Value
+    MetadataType = new_struct['MetadataType']
+    MetadataName = new_struct['MetadataName']
+    ItemType = new_struct['ItemType']   #Attributes/Properties/TabularSections/Forms
+    PropertyName = new_struct['PropertyName']
+    LevelType = new_struct['LevelType']
+    LevelPropName = new_struct['LevelPropName']
 
-    newValue.Res = data[MetadataType][MetadataName]['Properties'][newValue.PropName]['Value']
+    newValueRes = newValue.Value
+    if newValue.ValueType == 'checkbox' :
+        newValueRes = newValue.ValueAsBool
+    if newValue.ValueType == 'number' :
+        newValueRes = newValue.ValueAsNumber
 
-    if newValue.PropName == 'Name' :
-        data[MetadataType][newValue.Value] = dict(data[MetadataType][MetadataName])
-        data[MetadataType].pop(MetadataName)
-        MetadataName = newValue.Value
-        newValue.Res = data[MetadataType][MetadataName]['Properties'][newValue.PropName]['Value']
+    if ItemType == 'Properties' : #3-th level
+
+        if not newValue.PropertyName in data[MetadataType][MetadataName][ItemType]:
+            data[MetadataType][MetadataName][ItemType][newValue.PropertyName] = {}
+
+        data[MetadataType][MetadataName][ItemType][newValue.PropertyName]['Value'] = newValueRes
+        newValue.Res = data[MetadataType][MetadataName][ItemType][newValue.PropertyName]['Value']
+
+        if newValue.PropertyName == 'Name':
+            data[MetadataType][newValueRes] = dict(data[MetadataType][MetadataName])
+            data[MetadataType].pop(MetadataName)
+            MetadataName = newValueRes
+            newValue.Res = data[MetadataType][MetadataName][ItemType][newValue.PropertyName]['Value']
+
+
+
+
+
+    else:         # 5-th level
+
+        if new_struct['LevelType'] == '':
+            if not PropertyName in data[MetadataType][MetadataName][ItemType]:
+                data[MetadataType][MetadataName][ItemType][PropertyName] = {}
+
+            if not newValue.PropertyName in data[MetadataType][MetadataName][ItemType][PropertyName]:
+                data[MetadataType][MetadataName][ItemType][PropertyName][newValue.PropertyName] = {}
+
+            data[MetadataType][MetadataName][ItemType][PropertyName][newValue.PropertyName]['Value'] = newValueRes
+            newValue.Res = data[MetadataType][MetadataName][ItemType][PropertyName][newValue.PropertyName]['Value']
+
+        elif new_struct['LevelType'] == 'Properties':
+            # tabular section property
+            if  not newValue.PropertyName in data[MetadataType][MetadataName][ItemType][PropertyName][LevelType]:
+                data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][newValue.PropertyName] = {}
+
+            data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][newValue.PropertyName]['Value']  = newValueRes
+            newValue.Res = data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][newValue.PropertyName]['Value']
+
+        else:
+            # tabular section attributes
+
+            if not LevelPropName  in data[MetadataType][MetadataName][ItemType][PropertyName][LevelType]:
+                data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][LevelPropName] = {}
+
+            if not newValue.PropertyName in data[MetadataType][MetadataName][ItemType][PropertyName][LevelType]:
+                data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][LevelPropName][newValue.PropertyName] = {}
+
+            data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][LevelPropName][newValue.PropertyName]['Value'] = newValueRes
+            newValue.Res = data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][LevelPropName][newValue.PropertyName]['Value']
+
+
+
+
 
 @app.get("/{MetadataType}/{MetadataName}/{ItemType}/{PropertyName}/Properties")  #********************************
 async def read_property5(
@@ -332,8 +414,39 @@ if __name__ == '__main__':
     #newValue = Item()
     #newValue.setNew('Catalogs', '123', 'Catalogs.Goods','Comment')
 
-    #read_one_catalog_action(newValue)
-    #print('ddd')
+    new_struct = {
+        'MetadataType': 'Catalogs',
+        'MetadataName': 'Goods',
+        'ItemType': 'Attributes',
+        'PropertyName': 'Fullname',
+        'LevelType': '',
+        'LevelPropName': ''
+    }
+
+    new_struct = {
+        'MetadataType': 'Catalogs',
+        'MetadataName': 'Goods',
+        'ItemType': 'Properties',
+        'PropertyName': 'Comment',
+        'LevelType': '',
+        'LevelPropName': ''
+    }
+
+    newVal = EditItem()
+    #dd = {Name: 'sdsdsd', Value: 'sss', Path: 'mytree1.Catalogs.Goods.Attributes.weight', PropertyName: 'Type', res: ''}
+    newVal.Name = 'weight'
+    newVal.Value = 'sss'
+    newVal.ValueType = 'text'
+    newVal.ValueAsBool = False
+    newVal.ValueAsNumber = 0
+
+    newVal.PropertyPath = 'mytree1.Catalogs.Goods.Properties.Comment'
+    newVal.PropertyName = 'Comment'
+    edit_one_MetadataName_property(newVal, new_struct)
+
+
+    dd = [['a'], ['b']]
+    print(dd)
 
     dd = read_property5_test('Documents','Invoice', 'Attributes', 'Fullname', '')
     print(dd)

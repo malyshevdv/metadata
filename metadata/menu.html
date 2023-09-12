@@ -6,12 +6,21 @@
     <title>Document</title>
     <link href="{{ url_for('metadata', path='/menu.css') }}" rel="stylesheet">
 
-<script type="text/javascript" src="http://127.0.0.1:8084/metadata/src/tree.js"> </script>   
-<script type="text/javascript" src="http://127.0.0.1:8084/metadata/src/property.js"> </script>   
-<script type="text/javascript" src="http://127.0.0.1:8084/metadata/src/myhttp.js">  </script>  
+<!-- 
+<script type="text/javascript" src="http://127.0.0.1:8081/metadata/src/tree.js"> </script>   
+<script type="text/javascript" src="http://127.0.0.1:8081/metadata/src/property.js"> </script>   
+<script type="text/javascript" src="http://127.0.0.1:8081/metadata/src/myhttp.js">  </script>  
+-->
+
+<script type="text/javascript" src="{{ url_for('metadata', path='/src/tree.js') }}"> </script>   
+<script type="text/javascript" src="{{ url_for('metadata', path='/src/property.js') }}"> </script>   
+<script type="text/javascript" src="{{ url_for('metadata', path='/src/myhttp.js') }}">  </script>  
+
+
+
 <script>
   
-const portNumber = '8084'    
+const portNumber = '8082'    
   
 
 const PROP_NAME = 'Name'
@@ -67,9 +76,22 @@ function updateForm(newStr) {
     newDog.appendChild(h2);
 }        
    
-const ddd = function dd(res){
+const SeeResult = function dd(res){
     console.log(res)
     //alert('Hello')
+
+    if (res.PropertyName === 'Name'){
+       let propItem = document.getElementById(myProp.id)
+       propItem.innerHTML = res.Value
+
+       let index = myTree.list_id.indexOf(propItem.id);
+       if (index != -1) {
+        mytree1.list_id[index] = res.new_id
+       }
+
+       propItem.setAttribute('id', res.new_id);
+       mytree1.selectedItem = res.new_id;
+    }
     return
 
 
@@ -105,7 +127,7 @@ function takeDateFromSite_Fetch(adr, Method='GET', Action='', Component='', Body
     // send post request
     fetch(adr, options)
       .then(res => res.json())
-      .then(res => ddd(res))
+      .then(res => SeeResult(res))
       .catch(err => console.error(err))
 
 
@@ -210,6 +232,8 @@ function ShowProperty_Action(myId){
         ClearProperty()
     }
     else {
+        //console.log('property list adress:')
+        //console.log(adr)
         takeDateFromSite(adr, Method='GET', Action='RedrawProperty', Component='property')
     }    
 
@@ -287,7 +311,7 @@ console.log(mytree1.mydata);
                 <p>
                 <label>
                 Customer name: 
-                <input id="ss2" type="checkbox" 
+                <input id="ss2" type="checkbox" >
                 </label>
                 </p>
                 <span id="ss">5</span>

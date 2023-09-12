@@ -2,79 +2,46 @@ import metadata.src.Types as Types
 import metadata.src.Commands as Commands
 import metadata.src.Templates as Templates
 
-PropertyList = {
-    'Name':{
-        'Type': Types.STRING_TYPE,
-        'DefaultValue': 'Catalog1'
-    },
-    'Synonyme':{
-        'Type': Types.STRING_TYPE,
-        'DefaultValue': ''
-    },
-    'Comment':{
-        'Type': Types.STRING_TYPE,
-        'DefaultValue': 'Catalog1'
-    },
-    'Hierarchical': {
-        'Type': Types.BOOLEAN_TYPE,
-        'DefaultValue': False
-    },
-    'HierarchyType':{
-        'Type': Types.STRING_TYPE,
-        'DefaultValue': ''
-    },
-    'LimitNumberOfLevels':{
-        'Type': Types.BOOLEAN_TYPE,
-        'DefaultValue': False
-    },
-    'NumberOfLevels':{
-        'Type': Types.INTEGER_TYPE,
-        'DefaultValue': 2
+OB_PROP_NAME_Name = 'Name'
+OB_PROP_NAME_Synonyme = 'Synonyme'
+OB_PROP_NAME_Comment = 'Comment'
+OB_PROP_NAME_Hierarchical = 'Hierarchical'
+OB_PROP_NAME_HierarchyType = 'HierarchyType'
+OB_PROP_NAME_LimitNumberOfLevels = 'LimitNumberOfLevels'
+OB_PROP_NAME_NumberOfLevels = 'NumberOfLevels'
+OB_PROP_NAME_Owners = 'Owners'
+OB_PROP_NAME_CodeLength = 'CodeLength'
+OB_PROP_NAME_DescriptionLength = 'DescriptionLength'
+OB_PROP_NAME_CodeType = 'CodeType'
 
-    },
-    'Owners':{
-        'Type': Types.STRING_TYPE,
-        'DefaultValue': ''
-    },
-    'CodeLength':{
-        'Type': Types.INTEGER_TYPE,
-        'DefaultValue': 9
-    },
-    'DescriptionLength':{
-        'Type': Types.INTEGER_TYPE,
-        'DefaultValue': 150
-    },
-    'CodeType':{
-        'Type': Types.STRING_TYPE,
-        'DefaultValue': 'String'
-    },
-    'CheckUniqueness':{
-        'Type': Types.BOOLEAN_TYPE,
-        'DefaultValue': True
-    },
-    'Autonumbering':{
-        'Type': Types.BOOLEAN_TYPE,
-        'DefaultValue': True
-    },
-    'DefaultObjectForm':{
-        'Type': Types.STRING_TYPE,
-        'DefaultValue': ''
-    },
-    'DefaultFolderForm':{
-        'Type': Types.STRING_TYPE,
-        'DefaultValue': ''
-    },
-    'DefaultListForm':{
-        'Type': Types.STRING_TYPE,
-        'DefaultValue': ''
-    },
-    'DefaultChoiceForm':{
-        'Type': Types.STRING_TYPE,
-        'DefaultValue': ''
-    }
+OB_PROP_NAME_CheckUniqueness = 'CheckUniqueness'
+OB_PROP_NAME_Autonumbering = 'Autonumbering'
+OB_PROP_NAME_DefaultObjectForm = 'DefaultObjectForm'
+OB_PROP_NAME_DefaultFolderForm = 'DefaultFolderForm'
+OB_PROP_NAME_DefaultListForm = 'DefaultListForm'
+OB_PROP_NAME_DefaultChoiceForm = 'DefaultChoiceForm'
 
-}
+PropertyList = {}
 
+Types.addProp(PropertyList, OB_PROP_NAME_Name, Types.STRING_TYPE, 'Catalog1')
+Types.addProp(PropertyList, OB_PROP_NAME_Synonyme, Types.STRING_TYPE , '')
+Types.addProp(PropertyList, OB_PROP_NAME_Comment, Types.STRING_TYPE , 'Catalog1')
+Types.addProp(PropertyList, OB_PROP_NAME_Hierarchical, Types.BOOLEAN_TYPE , False)
+Types.addProp(PropertyList, OB_PROP_NAME_HierarchyType, Types.STRING_TYPE , '')
+Types.addProp(PropertyList, OB_PROP_NAME_LimitNumberOfLevels, Types.BOOLEAN_TYPE ,False )
+Types.addProp(PropertyList, OB_PROP_NAME_NumberOfLevels, Types.INTEGER_TYPE , 2 )
+Types.addProp(PropertyList, OB_PROP_NAME_Owners, Types.STRING_TYPE , '')
+
+Types.addProp(PropertyList, OB_PROP_NAME_CodeLength, Types.INTEGER_TYPE , 9)
+
+Types.addProp(PropertyList, OB_PROP_NAME_DescriptionLength, Types.INTEGER_TYPE , 150)
+Types.addProp(PropertyList, OB_PROP_NAME_CodeType, Types.STRING_TYPE , 'String', True, Types.CodeTypeList)
+Types.addProp(PropertyList, OB_PROP_NAME_CheckUniqueness, Types.BOOLEAN_TYPE , True)
+Types.addProp(PropertyList, OB_PROP_NAME_Autonumbering, Types.BOOLEAN_TYPE , True)
+Types.addProp(PropertyList, OB_PROP_NAME_DefaultObjectForm, Types.STRING_TYPE , '')
+Types.addProp(PropertyList, OB_PROP_NAME_DefaultFolderForm, Types.STRING_TYPE , '')
+Types.addProp(PropertyList, OB_PROP_NAME_DefaultListForm, Types.STRING_TYPE , '')
+Types.addProp(PropertyList, OB_PROP_NAME_DefaultChoiceForm, Types.STRING_TYPE , '')
 
 
 TabularSectionPropertyList = {
@@ -131,21 +98,21 @@ def CreateDemo(Name : str):
     # dd = {'Description': 'Goods'}
 
     newItem['Attributes']['weight'] = {
-        "Name": {Types.PROP_VALUE  : "weight"},
-        "type": {Types.PROP_VALUE  :'Number'},
-        "length": {Types.PROP_VALUE  :15},
-        "dim": {Types.PROP_VALUE  :0},
-        'format': {Types.PROP_VALUE  :""},
-        'indexed': {Types.PROP_VALUE  :False}
+        Types.ATR_PROP_NAME_Name : {Types.PROP_VALUE  : "weight"},
+        Types.ATR_PROP_NAME_Type : {Types.PROP_VALUE  :'Number'},
+        Types.ATR_PROP_NAME_MaxLength : {Types.PROP_VALUE  :15},
+        Types.ATR_PROP_NAME_Precision : {Types.PROP_VALUE  :0},
+        Types.ATR_PROP_NAME_Format : {Types.PROP_VALUE  :""},
+        Types.ATR_PROP_NAME_Index : {Types.PROP_VALUE  :False}
     }
 
     newItem['Attributes']['Fullname'] = {
-        "Name": {Types.PROP_VALUE  :"Fullname"},
-        "type": {Types.PROP_VALUE  :'String'},
-        "length": {Types.PROP_VALUE  :50},
-        "dim": {Types.PROP_VALUE  :0},
-        "format": {Types.PROP_VALUE  :""},
-        "indexed": {Types.PROP_VALUE  :False}
+        Types.ATR_PROP_NAME_Name : {Types.PROP_VALUE  :"Fullname"},
+        Types.ATR_PROP_NAME_Type : {Types.PROP_VALUE  :'String'},
+        Types.ATR_PROP_NAME_MaxLength : {Types.PROP_VALUE  :50},
+        Types.ATR_PROP_NAME_Precision : {Types.PROP_VALUE  :0},
+        Types.ATR_PROP_NAME_Format : {Types.PROP_VALUE  :""},
+        Types.ATR_PROP_NAME_Index : {Types.PROP_VALUE  :False}
     }
 
     newItem['Forms']['ItemForm'] = {
