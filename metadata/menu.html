@@ -6,15 +6,11 @@
     <title>Document</title>
     <link href="{{ url_for('metadata', path='/menu.css') }}" rel="stylesheet">
 
-<!-- 
-<script type="text/javascript" src="http://127.0.0.1:8081/metadata/src/tree.js"> </script>   
-<script type="text/javascript" src="http://127.0.0.1:8081/metadata/src/property.js"> </script>   
-<script type="text/javascript" src="http://127.0.0.1:8081/metadata/src/myhttp.js">  </script>  
--->
 
 <script type="text/javascript" src="{{ url_for('metadata', path='/src/tree.js') }}"> </script>   
 <script type="text/javascript" src="{{ url_for('metadata', path='/src/property.js') }}"> </script>   
 <script type="text/javascript" src="{{ url_for('metadata', path='/src/myhttp.js') }}">  </script>  
+<script type="text/javascript" src="{{ url_for('metadata', path='/src/metedata.js') }}">  </script>  
 
 
 
@@ -309,7 +305,27 @@ let mytree1 = new TreeClass('mytree1');
 let myProp = new PropertyWin('property');
 console.log(mytree1.mydata);
 
+document.onkeydown = function(evt) {
+    evt = evt || window.event;
+    var isEscape = false;
+    if ("key" in evt) {
+        isEscape = (evt.key === "Escape" || evt.key === "Esc");
+    } else {
+        isEscape = (evt.keyCode === 27);
+    }
+    if (isEscape) {
+        if (myProp.currentPropID != '') {
+            ob = document.getElementById(myProp.currentPropID);
+            if ((ob != undefined) || (ob.value != myProp.firstValue)) {
+                ob.value = myProp.firstValue;
+            }
 
+        }
+        else {
+            alert("Escape");
+        }    
+    }
+};
 
 </script>
 <noscript>Sorry, your browser does not support JavaScript!</noscript>
@@ -325,8 +341,8 @@ console.log(mytree1.mydata);
     <b>Tree</b>    
 
     <div class="flex group-horizontal">
-        <div id = "mytree1" class="md-tree">
-            <legend>mytree1</legend>
+        <div id = "mytree1" class="tree-box">
+            
         </div>
         
         <div id = "mytree3" class="area">

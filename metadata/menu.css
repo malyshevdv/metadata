@@ -90,14 +90,26 @@ th{
    /* background-color: red;*/
 }
 
-.md-tree{
-    width: 300px;
-    height: 100vh;
-    border: 1px solid grey;
+.tree-box{
+    width: 700px;
+    height: 100vb;
     flex-grow: 1;
     flex-wrap: nowrap;
     overflow-wrap: break-word;
+    
 }
+.tree-menu{
+}
+
+.tree-body{
+    border: 1px solid grey;
+    overflow-y: scroll;
+    width: 300px;
+    height: 100vb;
+}    
+
+
+
 .area{
     width: 100%;
     flex-grow: 8;
@@ -108,6 +120,12 @@ th{
     flex-grow: 1;
 }
 
+.enterfield:focus {
+    background-color: yellow;
+}
+.input_number:focus {
+    background-color: yellow;
+}
 
 /*CURSOR*/
 .tree-cursor[opened="false"]
@@ -209,15 +227,15 @@ th{
 .bar-top{
     width: 100%;
     background: lightblue;
+    display: flex;
 
 }
 
 .bar-item{
     padding: 4px;
     flex-wrap: nowrap; 
-    background-image: url(/metadata/create.png);
-    background-repeat: no-repeat;
-    width : 18px;
+    
+   
     
 }
 

@@ -1,4 +1,4 @@
-//import  from {/metadata/src/myhttp}
+//import * from {/metadata/metadata}
 
 class TreeClass {
     constructor (name) {
@@ -76,6 +76,8 @@ function SelectItem(myId){
         dd.setAttribute('selected', 'true');
     }
     
+    mytree1.selectedItem = myId;
+
     clearSelection(myId);    
 
     ShowProperty_Action(myId);
@@ -99,6 +101,49 @@ function clearSelection(ExeptId){
     }
 }
 
+function drawMenuButton(parentContainer, CommandName, ShowTitle = true){
+
+    menu_bar_item = document.createElement('div');
+    menu_bar_item.className = 'bar-item';
+    menu_bar_item.setAttribute('id', TreeID + '.menu.create');
+    menu_bar_item.Title = 'Delete'
+    
+    img = document.createElement('img');
+    
+    if (CommandName === 'Delete') {
+        img.setAttribute('src','/metadata/delete.png')
+        menu_bar_item.setAttribute('OnClick', 'Tree_Menu_Delete(id)');
+    }
+    if (CommandName === 'Create') {
+        img.setAttribute('src','/metadata/create.png')
+        menu_bar_item.setAttribute('OnClick', 'Tree_Menu_Create(id)');
+    }
+    if (CommandName === 'MoveUp') {
+        img.setAttribute('src','/metadata/arrow-up.png')
+        menu_bar_item.setAttribute('OnClick', 'Tree_Menu_MoveUp(id)');
+    }
+    if (CommandName === 'MoveDown') {
+        img.setAttribute('src','/metadata/arrow-down.png')
+        menu_bar_item.setAttribute('OnClick', 'Tree_Menu_MoveDown(id)');
+    }
+    if (CommandName === 'Refresh') {
+        img.setAttribute('src','/metadata/refresh.png')
+        menu_bar_item.setAttribute('OnClick', 'Tree_Menu_Refresh(id)');
+    }
+    
+    img.setAttribute('width','16px')
+    img.setAttribute('height','16px')
+    menu_bar_item.appendChild(img);
+    if (ShowTitle) {
+        lab = document.createElement('a');
+        lab.innerHTML = CommandName
+        menu_bar_item.appendChild(lab);
+    }    
+    
+    
+    parentContainer.appendChild(menu_bar_item);
+
+}
 
 function RedrawTree(myTree) {
 
@@ -116,16 +161,19 @@ function RedrawTree(myTree) {
     menu_bar = document.createElement('div');
     menu_bar.className = 'bar-top'
     
-    menu_bar_item = document.createElement('div');
-    menu_bar_item.className = 'bar-item';
-    menu_bar_item.innerHTML = 'Create';
-    menu_bar_item.setAttribute('OnClick', 'Tree_Menu_Create(id)');
-    menu_bar_item.setAttribute('id', TreeID + '.menu.create');
     
-    menu_bar.appendChild(menu_bar_item);
+    drawMenuButton(menu_bar,'Create', false);
+    drawMenuButton(menu_bar,'Delete', false);
+    drawMenuButton(menu_bar,'MoveUp', false);
+    drawMenuButton(menu_bar,'MoveDown', false);
+    drawMenuButton(menu_bar,'Refresh', false);
+
 
     container.appendChild(menu_bar);
 
+    tree_container = document.createElement('div');
+    tree_container.className = 'tree-body'
+    container.appendChild(tree_container);
 
 
     //ELEMENTS
@@ -133,7 +181,7 @@ function RedrawTree(myTree) {
     root_el = document.createElement('div');
     root_el.setAttribute('name', 'TreeID.root');
     root_el.innerHTML = '<a>root</a>';
-
+   
     let MetadataTypes = ["Catalogs" , "Documents", "InformationRegisters"];
 
     let nextID = myTree.getNextID();
@@ -141,7 +189,7 @@ function RedrawTree(myTree) {
     for (MetadataType of MetadataTypes) {
         FullName0 = TreeID + '.'+MetadataType;
         
-        MetadataTypeElem = DrawFirstLevelElement(container, MetadataType, MetadataType, 1, FullName0);
+        MetadataTypeElem = DrawFirstLevelElement(tree_container, MetadataType, MetadataType, 1, FullName0);
         MetadataItems = myTree.mydata[MetadataType];
         for (MetadataItem_Index in MetadataItems) {
             MetadataItem = MetadataItems[MetadataItem_Index]
@@ -334,8 +382,7 @@ function DrawFirstLevelElement(rootElement, Name, Title, levelNumber, FullName, 
     }
     span.setAttribute('id_level', FullNameItems.length-1);
     span.setAttribute('id_count', FullNameItems.length);
-    
-
+    span.setAttribute('parent_id', rootElement.id);
 
     root_catalog4.setAttribute('id', nextID + '.root')
     
@@ -353,8 +400,80 @@ function DrawCatalogItemElement(nextID, rootElement, item, Name, Title, levelNum
 }
 
 function Tree_Menu_Create(id) {
-    //container = document.getElementById(id);
-    //words = id.split();
-    alert('Create');
+    
+    let myOb = document.getElementById(mytree1.selectedItem);
 
+    let FieldName = myOb.getAttribute('id0')      //1
+    let MetadataType = myOb.getAttribute('id1')   //2 - Catalogs, Documents, InformationRegisters
+    let MetadataName = myOb.getAttribute('id2')   //3  name of previous objects
+    let SubType1 = myOb.getAttribute('id3')       //4  Attributes, TabularSections, Forms, Commands, Templates
+    let SubType2 = myOb.getAttribute('id4')       //5  name of previous objects
+    let SubType3 = myOb.getAttribute('id5')       //6  name of Attributes of tabular sections
+    let SubType4 = myOb.getAttribute('id6')       //7  item - tabulat sec attribute
+
+    let id_count = myOb.getAttribute('id_count')       //7  
+
+    if (id_count =='7'){  //attrib of tab section
+        alert('Create attribute for ' + MetadataName + " tab " + SubType2 + '  ' + SubType3);
+    }    
+    
+    if (id_count =='6'){
+        if (SubType2 === 'TabularSections'){
+            alert('Create attribute for ' + MetadataName + " tab " + SubType3);
+        }
+    }        
+        
+    if (id_count == '5'){
+        if (SubType2 === 'TabularSections'){
+            alert('Create tabular section for ' + MetadataName);
+        }
+        else{
+            alert('Create 4 new  ' + SubType1);
+
+        }    
+    }    
+
+    if (id_count == '4'){
+        
+            alert('Create 4 new  ' + SubType1);
+    }    
+    
+    if (id_count == '3'){
+        //alert('Create new  ' + MetadataType);
+        let parent_ob = document.getElementById(myOb.getAttribute('parent_id'));
+        newItem = document.createElement('div');
+        newItem.innerHTML = 'newItem';
+        parent_ob.appendChild(newItem);
+
+    }
+    
+    if (id_count == '2'){
+       
+            //alert('Create new  ' + MetadataType);
+
+            let parent_ob = document.getElementById(myOb.getAttribute('parent_id'));
+            newItem = document.createElement('div');
+            newItem.innerHTML = 'newItem';
+            parent_ob.appendChild(newItem);
+
+
+    }    
+    
+
+}
+
+function Tree_Menu_Delete(id) {
+    alert('Delete');
+}
+
+function Tree_Menu_MoveUp(id) {
+    alert('move up');
+}
+
+function Tree_Menu_MoveDown(id) {
+    alert('move down');
+}
+
+function Tree_Menu_Refresh(id) {
+    alert('Refresh');
 }

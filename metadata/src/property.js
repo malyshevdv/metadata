@@ -6,6 +6,13 @@ class PropertyWin{
         this.object_name = "";
         this.prop_id_list = [];
 
+        
+        this.currentPropID = "";
+        
+        this.firstValue = "";
+        this.firstValueAsNumber = 0;
+        this.firstValueAsBoolean = false;
+
     }
 }
 
@@ -51,12 +58,14 @@ function ShowProperty(Obj, Struct, Headers) {
         }
 
         new_input.addEventListener("change", updateValue);
-        new_input.addEventListener('onfocusin', onfocusProperty);
-        new_input.addEventListener('onfocusout', onfocusOutProperty);
+        
+        new_input.setAttribute('onfocusin', 'onfocusProperty(this)');
+        new_input.setAttribute('onfocusout', 'onfocusOutProperty(this)');
         
         new_input.setAttribute('id', id_input)
         new_input.setAttribute('PropertyName', PropertyName)
         new_input.setAttribute('Name', PropertyName)
+        new_input.className = 'enterfield'
 
         if (PropertyName === 'Name') {
             new_input.setAttribute('pattern', '[a-zA-Z]')
@@ -128,18 +137,25 @@ function ShowProperty(Obj, Struct, Headers) {
 
 function onfocusProperty(ff) {
 
-    ff.style.background = 'yellow'
     ob = document.getElementById('prop_label')
-    ob.innerHTML = ff
+    ob.innerHTML = '' + ff.value + '  ' + ff.id;
+    myProp.currentPropID = ff.id;
+    myProp.firstValue = ff.value;
+    myProp.firstValueAsNumber = ff.ValueAsNumber;
+    myProp.firstValueAsBoolean = ff.ValueAsBool;
+    
     //alert('dfdf')
 }
 
 function onfocusOutProperty(ff) {
 
-    ff.style.background = 'white'
-    ob = document.getElementById('prop_label')
-    ob.innerHTML = ff
-    //alert('dfdf')
+    ob.innerHTML = '';
+    myProp.currentPropID = '';
+  
+    myProp.firstValue = '';
+    myProp.firstValueAsNumber = 0;
+    myProp.firstValueAsBoolean = false;
+  
 }
 
 
