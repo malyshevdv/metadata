@@ -51,9 +51,17 @@ function ShowProperty(Obj, Struct, Headers) {
         }
 
         new_input.addEventListener("change", updateValue);
+        new_input.addEventListener('onfocusin', onfocusProperty);
+        new_input.addEventListener('onfocusout', onfocusOutProperty);
+        
         new_input.setAttribute('id', id_input)
         new_input.setAttribute('PropertyName', PropertyName)
         new_input.setAttribute('Name', PropertyName)
+
+        if (PropertyName === 'Name') {
+            new_input.setAttribute('pattern', '[a-zA-Z]')
+            new_input.setAttribute('Title', 'Identifier rules')
+        }
 
         let TempValue = undefined;
 
@@ -118,6 +126,24 @@ function ShowProperty(Obj, Struct, Headers) {
 
 }
 
+function onfocusProperty(ff) {
+
+    ff.style.background = 'yellow'
+    ob = document.getElementById('prop_label')
+    ob.innerHTML = ff
+    //alert('dfdf')
+}
+
+function onfocusOutProperty(ff) {
+
+    ff.style.background = 'white'
+    ob = document.getElementById('prop_label')
+    ob.innerHTML = ff
+    //alert('dfdf')
+}
+
+
+
 function updateValue(e) {
     //
     //sent new value to server
@@ -148,29 +174,31 @@ function updateValue(e) {
     log2.innerHTML = newValue2;
 
     
-    let words = myProp.object_name.split('.')
-    
-    let FieldName = words[0]      //1
-    let MetadataType = words[1]   //2 - Catalogs, Documents, InformationRegisters
-    let MetadataName = words[2]   //3  name of previous objects
-    let SubType1 = words[3]       //4  Attributes, TabularSections, Forms, Commands, Templates
-    let SubType2 = words[4]       //5  name of previous objects
-    let SubType3 = words[5]       //6  name of Attributes of tabular sections
-    let SubType4 = words[6]       //7  
+    //let words = myProp.object_name.split('.')
+    let myOb = document.getElementById(myProp.object_name);
+  
+    let FieldName = myOb.getAttribute('id0')      //1
+    let MetadataType = myOb.getAttribute('id1')   //2 - Catalogs, Documents, InformationRegisters
+    let MetadataName = myOb.getAttribute('id2')   //3  name of previous objects
+    let SubType1 = myOb.getAttribute('id3')       //4  Attributes, TabularSections, Forms, Commands, Templates
+    let SubType2 = myOb.getAttribute('id4')       //5  name of previous objects
+    let SubType3 = myOb.getAttribute('id5')       //6  name of Attributes of tabular sections
+    let SubType4 = myOb.getAttribute('id6')       //7  
 
-    
+    let id_count = myOb.getAttribute('id_count')       //7  
+  
 
 
     let newValue = {
-        "Name" : "sdsdsd",
+        //"Name" : "sdsdsd",
         "Value" :  '' + newValue2,
         "ValueType" :  e.target.type,
         "ValueAsBool" :  false,
         "ValueAsNumber" :  0,
         
-        "PropertyPath"  : "" + myProp.object_name,  //"mytree1.Catalogs.Goods"
+        //"PropertyPath"  : "" + myProp.object_name,  //"mytree1.Catalogs.Goods"
         'PropertyName' : PropName ,
-        'new_id' : '',
+        //'new_id' : '',
         "res" : ''  
         }
 
@@ -185,10 +213,10 @@ function updateValue(e) {
 
     let new_id = myProp.object_name.split('.')
 
-    if (words.length === 3) {
+    if (id_count == 3) {
         adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/Properties/' + PropName;
     }
-    else if (words.length === 5) {
+    else if (id_count == 5) {
         adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/' + SubType1 + '/' + SubType2;
 
         if (SubType1 === 'TabularSections') {
@@ -196,16 +224,16 @@ function updateValue(e) {
         }
         
     }    
-    else if (words.length === 7) {
+    else if (id_count == 7) {
         adr = '' + SITE_ADRESS  + '' + MetadataType + '/' + MetadataName + '/' + SubType1 + '/' + SubType2 + '/' + SubType3 + '/' +SubType4;
     }    
    
-    if (PropName === 'Name') {
-        new_id[words.length-1] = '' + newValue2
-    }
+    //if (PropName === 'Name') {
+    //    new_id[myLevel-1] = '' + newValue2
+    //}
 
-    new_id = new_id.join('.');
-    newValue.new_id = new_id;
+    //new_id = new_id.join('.');
+    //newValue.new_id = new_id;
 
     if (adr ==='') {
        // ClearProperty()

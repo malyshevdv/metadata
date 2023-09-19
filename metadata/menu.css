@@ -96,6 +96,7 @@ th{
     border: 1px solid grey;
     flex-grow: 1;
     flex-wrap: nowrap;
+    overflow-wrap: break-word;
 }
 .area{
     width: 100%;

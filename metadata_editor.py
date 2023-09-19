@@ -116,14 +116,14 @@ class IgnoredType:
     pass
 
 class EditItem(BaseModel):
-    Name: str = ''
+    #Name: str = ''
     Value: str = ''
     ValueType: str = ''
     ValueAsBool: bool = False
     ValueAsNumber: int = 0
-    PropertyPath : str = ''
+    #PropertyPath : str = ''
     PropertyName : str = ''
-    new_id : str = ''
+    #new_id : str = ''
     Res : str = ''
     def setRes(self, newRes):
         self.res = newRes
@@ -231,6 +231,18 @@ def edit_one_MetadataName_property(newValue : EditItem, new_struct : dict):
             data[MetadataType][MetadataName][ItemType][PropertyName][newValue.PropertyName]['Value'] = newValueRes
             newValue.Res = data[MetadataType][MetadataName][ItemType][PropertyName][newValue.PropertyName]['Value']
 
+            if newValue.PropertyName == 'Name':
+                newPropertyName = newValueRes
+                data[MetadataType][MetadataName][ItemType][newPropertyName] = \
+                    dict(data[MetadataType][MetadataName][ItemType][PropertyName])
+                data[MetadataType][MetadataName][ItemType].pop(PropertyName)
+                PropertyName = newPropertyName
+                newValue.Res = data[MetadataType][MetadataName][ItemType][PropertyName][newValue.PropertyName]['Value']
+
+
+
+
+
         elif new_struct['LevelType'] == 'Properties':
             # tabular section property
             if  not newValue.PropertyName in data[MetadataType][MetadataName][ItemType][PropertyName][LevelType]:
@@ -238,6 +250,15 @@ def edit_one_MetadataName_property(newValue : EditItem, new_struct : dict):
 
             data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][newValue.PropertyName]['Value']  = newValueRes
             newValue.Res = data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][newValue.PropertyName]['Value']
+
+            if newValue.PropertyName == 'Name':
+                newPropertyName = newValueRes
+                data[MetadataType][MetadataName][ItemType][newPropertyName] = dict(
+                    data[MetadataType][MetadataName][ItemType][PropertyName])
+                data[MetadataType][MetadataName][ItemType].pop(PropertyName)
+                PropertyName = newPropertyName
+                newValue.Res = data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][newValue.PropertyName]['Value']
+
 
         else:
             # tabular section attributes
@@ -248,11 +269,21 @@ def edit_one_MetadataName_property(newValue : EditItem, new_struct : dict):
             if not newValue.PropertyName in data[MetadataType][MetadataName][ItemType][PropertyName][LevelType]:
                 data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][LevelPropName][newValue.PropertyName] = {}
 
-            data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][LevelPropName][newValue.PropertyName]['Value'] = newValueRes
+            data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][LevelPropName][newValue.PropertyName]['Value'] = \
+                newValueRes
             newValue.Res = data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][LevelPropName][newValue.PropertyName]['Value']
 
+            if newValue.PropertyName == 'Name':
+                newPropertyName = newValueRes
+                data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][newPropertyName] = dict(
+                    data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][LevelPropName])
+                data[MetadataType][MetadataName][ItemType][PropertyName][LevelType].pop(LevelPropName)
+                LevelPropName = newPropertyName
+                newValue.Res = data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][LevelPropName][newValue.PropertyName]['Value']
 
 
+
+    dd = 0
 
 
 @app.get("/{MetadataType}/{MetadataName}/{ItemType}/{PropertyName}/Properties")  #********************************
@@ -426,22 +457,22 @@ if __name__ == '__main__':
     new_struct = {
         'MetadataType': 'Catalogs',
         'MetadataName': 'Goods',
-        'ItemType': 'Properties',
-        'PropertyName': 'Comment',
-        'LevelType': '',
-        'LevelPropName': ''
+        'ItemType': 'TabularSections',
+        'PropertyName': 'Goods',
+        'LevelType': 'Attributes',
+        'LevelPropName': 'Count'
     }
 
     newVal = EditItem()
     #dd = {Name: 'sdsdsd', Value: 'sss', Path: 'mytree1.Catalogs.Goods.Attributes.weight', PropertyName: 'Type', res: ''}
-    newVal.Name = 'weight'
+    #newVal.Name = ''
     newVal.Value = 'sss'
     newVal.ValueType = 'text'
     newVal.ValueAsBool = False
     newVal.ValueAsNumber = 0
 
-    newVal.PropertyPath = 'mytree1.Catalogs.Goods.Properties.Comment'
-    newVal.PropertyName = 'Comment'
+   # newVal.PropertyPath = 'mytree1.Catalogs.Goods.Properties.Comment'
+    newVal.PropertyName = 'Name'
     edit_one_MetadataName_property(newVal, new_struct)
 
 

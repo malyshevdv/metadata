@@ -10,11 +10,26 @@ class TreeClass {
         this.needRedrawTree = false;
         this.list_id = [];
         this.JSON_string = '';
+        this.NextCount = 0;
     }
 
     get_list_id() {
         return this.list_id; 
     }        
+    getNextID() {
+        this.NextCount += 1
+        return this.NextCount
+    }
+    pushItem(Item, returnNextID = true){
+        let newName = '' + Item;
+        if (returnNextID) {
+            newName = newName + '.' + this.getNextID() ;
+        }
+        this.list_id.push(newName) ;
+        
+        return newName  
+    }
+
 }
 
 function SelectCursor(myId) {
@@ -121,15 +136,27 @@ function RedrawTree(myTree) {
 
     let MetadataTypes = ["Catalogs" , "Documents", "InformationRegisters"];
 
-    for (MetadataType of MetadataTypes) {
+    let nextID = myTree.getNextID();
 
-        MetadataTypeElem = DrawFirstLevelElement(container, MetadataType, MetadataType, 1, TreeID + '.'+MetadataType);
+    for (MetadataType of MetadataTypes) {
+        FullName0 = TreeID + '.'+MetadataType;
+        
+        MetadataTypeElem = DrawFirstLevelElement(container, MetadataType, MetadataType, 1, FullName0);
         MetadataItems = myTree.mydata[MetadataType];
         for (MetadataItem_Index in MetadataItems) {
             MetadataItem = MetadataItems[MetadataItem_Index]
             MetadataItemName = MetadataItem.Properties.Name.Value;
-            FullName1 = TreeID +'.' + MetadataType + '.'+ MetadataItemName;
-            myTree.list_id.push(FullName1);
+            FullName1 = FullName0 + '.'+ MetadataItemName;
+            ItemStruct = {
+                'FieldName': TreeID, 
+                'MetadataType' : MetadataType,
+                'MetadataName' : MetadataItemName,
+                'ItemType' : '',
+                'PropertyName' : '',
+                'LevelType' : '',
+                'LevelPropName' : ''
+            }
+             
             elem_catalog = DrawFirstLevelElement(MetadataTypeElem, MetadataItemName, MetadataItemName, 0, FullName1,"0", MetadataType,'CatalogItem');
         
             //reg - dimensions and resourses    
@@ -138,28 +165,24 @@ function RedrawTree(myTree) {
                 //Dimensions
                SubGroup = 'Dimensions';
                FullName2 = FullName1 + '.' + SubGroup;
-               myTree.list_id.push(FullName2);
                elem_atr = DrawFirstLevelElement(elem_catalog, SubGroup, SubGroup, 0, FullName2);
    
                for (SubItem_Index in MetadataItem[SubGroup]) {
                    SubItem = MetadataItem[SubGroup][SubItem_Index]
                    SubItemName = SubItem.Name;
                    FullName3 = FullName2 + '.' + SubItem.Name;
-                   myTree.list_id.push(FullName3);
                    DrawFirstLevelElement(elem_atr, SubItemName, SubItemName, 0, FullName3,"-1" , SubGroup);
                }
                     
                 //Resourses
                SubGroup = 'Resourses';
                FullName2 = FullName1 + '.' + SubGroup;
-               myTree.list_id.push(FullName2);
                elem_atr = DrawFirstLevelElement(elem_catalog, SubGroup, SubGroup, 0, FullName2);
    
                for (SubItem_Index in MetadataItem[SubGroup]) {
                    SubItem = MetadataItem[SubGroup][SubItem_Index]
                    SubItemName = SubItem.Name;
                    FullName3 = FullName2 + '.' + SubItem.Name;
-                   myTree.list_id.push(FullName3);
                    DrawFirstLevelElement(elem_atr, SubItemName, SubItemName, 0, FullName3,"-1" , SubGroup);
                }
    
@@ -170,14 +193,12 @@ function RedrawTree(myTree) {
             //Attributes
             SubGroup = 'Attributes';
             FullName2 = FullName1 + '.' + SubGroup;
-            myTree.list_id.push(FullName2);
             elem_atr = DrawFirstLevelElement(elem_catalog, SubGroup, SubGroup, 0, FullName2);
 
             for (SubItem_Index in MetadataItem[SubGroup]) {
                 SubItem = MetadataItem[SubGroup][SubItem_Index]
                 SubItemName = SubItem.Name.Value;
                 FullName3 = FullName2 + '.' + SubItemName;
-                myTree.list_id.push(FullName3);
                 DrawFirstLevelElement(elem_atr, SubItemName, SubItemName, 0, FullName3,"-1" , SubGroup);
             }
 
@@ -187,21 +208,18 @@ function RedrawTree(myTree) {
             if (['Catalogs', 'Documents'].includes(MetadataType) ) {
                     SubGroup = 'TabularSections';
                 FullName2 = FullName1 + '.' + SubGroup;
-                myTree.list_id.push(FullName2);
                 elem_atr = DrawFirstLevelElement(elem_catalog, SubGroup, SubGroup, 0, FullName2);
 
                 for (SubItem_Index in MetadataItem[SubGroup]) {
                     SubItem = MetadataItem[SubGroup][SubItem_Index]
                     SubItemName = SubItem.Properties.Name.Value;
                     FullName3 = FullName2 + '.' + SubItemName;
-                    myTree.list_id.push(FullName3);
                     elem_tab = DrawFirstLevelElement(elem_atr, SubItemName, SubItemName, 0, FullName3,"-1" , SubGroup);
             
                     for (keySubItemAtr in SubItem['Attributes']) {
                         SubItemAtr = SubItem['Attributes'][keySubItemAtr];
                         SubItemAtrName = SubItemAtr.Name.Value;
                         FullName4 = FullName3 + '.Attributes.' + SubItemAtrName;
-                        myTree.list_id.push(FullName4);
                         DrawFirstLevelElement(elem_tab, SubItemAtrName, SubItemAtrName, '', FullName4,"-1" , "Attributes");
                     }        
                 }
@@ -210,14 +228,12 @@ function RedrawTree(myTree) {
             //Forms
             SubGroup = 'Forms';
             FullName2 = FullName1 + '.' + SubGroup;
-            myTree.list_id.push(FullName2);
             elem_atr = DrawFirstLevelElement(elem_catalog, SubGroup, SubGroup, 0, FullName2);
 
             for (SubItem_Index in MetadataItem[SubGroup]) {
                 SubItem = MetadataItem[SubGroup][SubItem_Index]
                 SubItemName = SubItem.Name.Value;
                 FullName3 = FullName2 + '.' + SubItemName;
-                myTree.list_id.push(FullName3);
                 DrawFirstLevelElement(elem_atr, SubItemName, SubItemName, 0, FullName3,"-1" , SubGroup);
             }
 
@@ -225,14 +241,12 @@ function RedrawTree(myTree) {
             //Commands
             SubGroup = 'Commands'
             FullName2 = FullName1 + '.' + SubGroup;
-            myTree.list_id.push(FullName2);
             elem_atr = DrawFirstLevelElement(elem_catalog, SubGroup, SubGroup, 0, FullName2);
 
             for (SubItem_Index in MetadataItem[SubGroup]) {
                 SubItem = MetadataItem[SubGroup][SubItem_Index]
                 SubItemName = SubItem.Name.Value;
                 FullName3 = FullName2 + '.' + SubItemName;
-                myTree.list_id.push(FullName3);
                 DrawFirstLevelElement(elem_atr, SubItemName, SubItemName, 0, FullName3,"-1" , SubGroup);
             }
 
@@ -240,19 +254,14 @@ function RedrawTree(myTree) {
             //Templates
             SubGroup = 'Templates'
             FullName2 = FullName1 + '.' + SubGroup;
-            myTree.list_id.push(FullName2);
             elem_atr = DrawFirstLevelElement(elem_catalog, SubGroup, SubGroup, 0, FullName2);
 
             for (SubItem_Index in MetadataItem[SubGroup]) {
                 SubItem = MetadataItem[SubGroup][SubItem_Index]
                 SubItemName = SubItem.Name.Value;
                 FullName3 = FullName2 + '.' + SubItemName;
-                myTree.list_id.push(FullName3);
                 DrawFirstLevelElement(elem_atr, SubItemName, SubItemName, 0, FullName3,"-1" , SubGroup);
             }
-
-
-
 
         } //Item
     }    
@@ -270,9 +279,9 @@ function RedrawTree(myTree) {
 
 function DrawFirstLevelElement(rootElement, Name, Title, levelNumber, FullName, SubItemsCount='0', NameIcon = '', ItemType) {
 
-    FullNameItems = FullName.split();
-
-
+    let FullNameItems = FullName.split('.');
+    let ItemName = "" + FullNameItems[0]+'.Item' ;
+    let nextID = mytree1.pushItem(ItemName)
     
     root_catalog = document.createElement('div');
     root_catalog.className = 'tree-item';
@@ -288,7 +297,7 @@ function DrawFirstLevelElement(rootElement, Name, Title, levelNumber, FullName, 
        root_catalog2 = document.createElement('div')
         root_catalog2.className = 'tree-cursor'
         root_catalog2.setAttribute('opened', 'true')
-        root_catalog2.setAttribute('id', FullName + '.',)
+        root_catalog2.setAttribute('id', nextID + '.',)
         root_catalog2.setAttribute('OnClick', 'SelectCursor(id)',)
         root_catalog2.setAttribute('SubItemsCount', SubItemsCount)
         root_catalog.appendChild(root_catalog2)
@@ -307,20 +316,28 @@ function DrawFirstLevelElement(rootElement, Name, Title, levelNumber, FullName, 
     root_catalog4 = document.createElement('div')
     root_catalog4.id = Name
     root_catalog4.className = 'tree-item  group-vertical'
-    root_catalog4.setAttribute('id', FullName+ '.gr')
+    root_catalog4.setAttribute('id', nextID + '.gr')
     root_catalog4.setAttribute('SubItemsCount', SubItemsCount)
     
    // root_catalog4.innerHTML = Title;
 
     span = document.createElement('span')
     span.innerHTML = Title;
-    span.setAttribute('id', FullName )
+    span.setAttribute('id', nextID)
     span.setAttribute('selected', 'false')
     span.setAttribute('OnClick', 'SelectItem(id)')
     span.setAttribute('SubItemsCount', SubItemsCount)
     span.setAttribute('ItemType', ItemType)
 
-    root_catalog4.setAttribute('id', FullName+'.root')
+    for (let ii=0; ii < FullNameItems.length; ii++){
+        span.setAttribute('id'+ii, FullNameItems[ii]);
+    }
+    span.setAttribute('id_level', FullNameItems.length-1);
+    span.setAttribute('id_count', FullNameItems.length);
+    
+
+
+    root_catalog4.setAttribute('id', nextID + '.root')
     
     root_catalog4.appendChild(span);
 
@@ -331,8 +348,8 @@ function DrawFirstLevelElement(rootElement, Name, Title, levelNumber, FullName, 
     return root_catalog4;
 }
 
-function DrawCatalogItemElement(rootElement, item, Name, Title, levelNumber)  {
-    DrawFirstLevelElement(rootElement, 'Catalogs', item.Name, levelNumber)  
+function DrawCatalogItemElement(nextID, rootElement, item, Name, Title, levelNumber)  {
+    DrawFirstLevelElement(nextID, rootElement, 'Catalogs', item.Name, levelNumber)  
 }
 
 function Tree_Menu_Create(id) {
