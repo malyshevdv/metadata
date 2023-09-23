@@ -81,7 +81,99 @@ async def read_tree(request: Request):
 
     return json.dumps(res)
 
+class CreateModel2(BaseModel):
+    Action: str = 'new'
+    Name : str = ''
+    Path : str = ''
+    Result :bool = False
 
+
+
+def getNextName(Path : str):
+    words = Path.split('.')
+    TypeName = words[-1]
+    NewName = Types.MetadataTypes[TypeName].get('NewItemName', 'NewItem')
+    CurrentLength = len(data[words[1]])
+    match len(words):
+        case 2 :
+            CurrentLength = len(data[words[1]])
+        case 3 :
+            CurrentLength = len(data[words[1]][words[2]])
+        case 4 :
+            CurrentLength = len(data[words[1]][words[2]][words[3]])
+        case 5 :
+            CurrentLength = len(data[words[1]][words[2]][words[3]][words[4]])
+        case 6 :
+            CurrentLength = len(data[words[1]][words[2]][words[3]][words[4]][words[5]])
+        case 7 :
+            CurrentLength = len(data[words[1]][words[2]][words[3]][words[4]][words[5]][words[6]])
+        case 8 :
+            CurrentLength = len(data[words[1]][words[2]][words[3]][words[4]][words[5]][words[6]][words[7]])
+
+    #CurrentLength = CurrentLength+1
+    NewName = f"{NewName}{CurrentLength+1}"
+
+    return NewName
+
+
+# PUT  - CREATE NEW OBJECT
+
+@app.put("/CreateItem/")  #*********************************************
+async def create_new_item0(Instruction : CreateModel2):
+
+    ss = 0
+    Instruction.Name = 'NewItem1'
+    Instruction.Result = True
+
+    #if MetadataType == 'Catalogs' :
+    create_new_item_simple(Instruction)
+
+    return Instruction
+
+def create_new_item_simple(Instruction : CreateModel2):
+
+    words = Instruction.Path.split('.')
+    Instruction.Name = getNextName(Instruction.Path)
+
+    NewItem = {}
+
+    ItemType = words[-1]
+
+    match ItemType:
+        case 'Catalogs':
+            NewItem = Catalogs.CreateNewItem(Instruction.Name)
+        case 'Documents':
+            NewItem = Documents.CreateNewItem(Instruction.Name)
+        case 'InformationRegisters':
+            NewItem = InformationRegisters.CreateNewItem(Instruction.Name)
+
+        case 'TabularSections':
+            NewItem = Types.CreateNewTabular(Instruction.Name)
+
+        case 'Attributes':
+            NewItem = Types.CreateNewAttribute_String(Instruction.Name)
+        case 'Dimentions':
+            NewItem = Types.CreateNewAttribute_String(Instruction.Name)
+        case 'Resourses':
+            NewItem = Types.CreateNewAttribute_String(Instruction.Name)
+        case 'Forms':
+            NewItem = Types.CreateNewForm(Instruction.Name)
+        case 'Commands':
+            NewItem = Types.CreateNewCommand(Instruction.Name)
+
+    match len(words):
+        case 2:
+            data[words[1]][Instruction.Name] = NewItem
+        case 3:
+            data[words[1]][words[2]][Instruction.Name] = NewItem
+        case 4:
+            data[words[1]][words[2]][words[3]][Instruction.Name] = NewItem
+        case 5:
+            data[words[1]][words[2]][words[3]][words[4]][Instruction.Name] = NewItem
+        case 6:
+            data[words[1]][words[2]][words[3]][words[4]][words[5]][Instruction.Name] = NewItem
+        case 7:
+            data[words[1]][words[2]][words[3]][words[4]][words[5]][words[6]][Instruction.Name] = NewItem
 
 #
 #
@@ -374,6 +466,20 @@ async def read_items(request: Request):
             ss = 'error'
     return ss
 
+@app.delete('/{MetadataType}/{MetadataName}')
+async def deleteItem_2(MetadataType: str, MetadataName : str):
+    data[MetadataType].pop(MetadataName)
+    return {'Result' : True}
+
+@app.delete('/{MetadataType}/{MetadataName}/{lev1}/{lev2}')
+async def deleteItem_2(MetadataType: str, MetadataName : str, lev1 : str, lev2 : str):
+    data[MetadataType][MetadataName][lev1].pop(lev2)
+    return {'Result' : True}
+@app.delete('/{MetadataType}/{MetadataName}/{lev1}/{lev2}/{lev3}')
+async def deleteItem_2(MetadataType: str, MetadataName : str, lev1 : str, lev2 : str, lev3 : str):
+    data[MetadataType][MetadataName][lev1][lev2].pop(lev3)
+    return {'Result' : True}
+
 
 
 class CatalogItem:
@@ -432,19 +538,7 @@ def print_hi(name):
 
     readConfig()
 
-
-       #uvicorn.run(app, host="0.0.0.0", port=8000)
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-    ss =  data['Catalogs']['Goods']['Properties']
-    sss = data['Catalogs']['Goods']['Attributes']['weight']
-    aa = 0
-
-    #newValue = Item()
-    #newValue.setNew('Catalogs', '123', 'Catalogs.Goods','Comment')
-
+def TestEditProperty():
     new_struct = {
         'MetadataType': 'Catalogs',
         'MetadataName': 'Goods',
@@ -464,17 +558,45 @@ if __name__ == '__main__':
     }
 
     newVal = EditItem()
-    #dd = {Name: 'sdsdsd', Value: 'sss', Path: 'mytree1.Catalogs.Goods.Attributes.weight', PropertyName: 'Type', res: ''}
-    #newVal.Name = ''
+    # dd = {Name: 'sdsdsd', Value: 'sss', Path: 'mytree1.Catalogs.Goods.Attributes.weight', PropertyName: 'Type', res: ''}
+    # newVal.Name = ''
     newVal.Value = 'sss'
     newVal.ValueType = 'text'
     newVal.ValueAsBool = False
     newVal.ValueAsNumber = 0
 
-   # newVal.PropertyPath = 'mytree1.Catalogs.Goods.Properties.Comment'
+    # newVal.PropertyPath = 'mytree1.Catalogs.Goods.Properties.Comment'
     newVal.PropertyName = 'Name'
     edit_one_MetadataName_property(newVal, new_struct)
 
+
+def TestCreateItem():
+
+    TestData = CreateModel2()
+    TestData.Path = 'mytree1.InformationRegisters.Attributes'
+    TestData.Name = ''
+    TestData.Result = False
+
+    create_new_item_simple(TestData)
+
+
+    #uvicorn.run(app, host="0.0.0.0", port=8000)
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    print_hi('PyCharm')
+    ss =  data['Catalogs']['Goods']['Properties']
+    sss = data['Catalogs']['Goods']['Attributes']['weight']
+    aa = 0
+
+    #newValue = Item()
+    #newValue.setNew('Catalogs', '123', 'Catalogs.Goods','Comment')
+
+    #test to edit property
+    #TestEditProperty()
+
+    #test to crete new item
+    TestCreateItem()
 
     dd = [['a'], ['b']]
     print(dd)

@@ -339,7 +339,9 @@ function DrawFirstLevelElement(rootElement, Name, Title, levelNumber, FullName, 
     root_catalog1.className = 'tree-level-padding-' + levelNumber;
     root_catalog.appendChild(root_catalog1);
 
-    if (SubItemsCount === '-1') {
+    FinishedTypes = ["Attributes", "Forms","Commands", "Templates", "Dimentions", "Resourses"]
+    if (FinishedTypes.includes(ItemType)){
+    //if (SubItemsCount === '-1') {
     }
     else {
        root_catalog2 = document.createElement('div')
@@ -393,15 +395,73 @@ function DrawFirstLevelElement(rootElement, Name, Title, levelNumber, FullName, 
     rootElement.appendChild(root_catalog)
 
     return root_catalog4;
+
+/*
+
+
+
+
+*/
 }
 
 function DrawCatalogItemElement(nextID, rootElement, item, Name, Title, levelNumber)  {
     DrawFirstLevelElement(nextID, rootElement, 'Catalogs', item.Name, levelNumber)  
 }
 
+function CreateItem(path, ParentID){
+    
+    console.log(path)
+    
+    let FieldName = path[0]      //1
+    let MetadataType = path[1]   //2 - Catalogs, Documents, InformationRegisters
+    let MetadataName = path[2]   //3  name of previous objects
+    let SubType1 = path[3]       //4  Attributes, TabularSections, Forms, Commands, Templates
+    let SubType2 = path[4]       //5  name of previous objects
+    let SubType3 = path[5]       //6  name of Attributes of tabular sections
+    let SubType4 = path[6]       //7  
+
+    
+    let newItemStructure = {
+       // FieldName : FieldName,
+        Action : 'new',
+        Name :  '',
+        Path : path.join('.'),
+        Result : false
+    }
+
+    adr = '' + SITE_ADRESS  + '' + MetadataType;
+    for (let i=2; i<=6; i++){
+        if (path[i] != undefined) {
+            ard = adr + '/' +  path[i]}
+        else {
+            break
+        }    
+    }
+
+    adr = '' + SITE_ADRESS  + 'CreateItem';
+    
+    if (adr ==='') {
+        // ClearProperty()
+     }
+     else {
+         console.log('save property:')
+         console.log(adr)
+         console.log(newItemStructure)
+         
+         takeDateFromSite_Fetch(adr, Method='PUT', Action='NewItem', Component = ParentID, newItemStructure)
+     }  
+
+    //let ss = '.'.join(path)
+    //console.log(ss)
+
+}
+
 function Tree_Menu_Create(id) {
     
-    let myOb = document.getElementById(mytree1.selectedItem);
+    let CurrentID = mytree1.selectedItem;
+    let myOb = document.getElementById(CurrentID);
+    let ParentID =myOb.getAttribute('parent_id');
+    
 
     let FieldName = myOb.getAttribute('id0')      //1
     let MetadataType = myOb.getAttribute('id1')   //2 - Catalogs, Documents, InformationRegisters
@@ -414,57 +474,141 @@ function Tree_Menu_Create(id) {
     let id_count = myOb.getAttribute('id_count')       //7  
 
     if (id_count =='7'){  //attrib of tab section
-        alert('Create attribute for ' + MetadataName + " tab " + SubType2 + '  ' + SubType3);
+        //alert('Create attribute for ' + MetadataName + " tab " + SubType2 + '  ' + SubType3);
+        CreateItem([FieldName,MetadataType,MetadataName, SubType1, SubType2,SubType3], ParentID);
     }    
     
     if (id_count =='6'){
         if (SubType2 === 'TabularSections'){
-            alert('Create attribute for ' + MetadataName + " tab " + SubType3);
+            //alert('Create attribute for ' + MetadataName + " tab " + SubType3);
+            CreateItem([FieldName,MetadataType,MetadataName, SubType1, SubType2,SubType3], ParentID);
+        }
+        else {
+            CreateItem([FieldName,MetadataType,MetadataName, SubType1, SubType2,SubType3], ParentID);
         }
     }        
         
     if (id_count == '5'){
         if (SubType2 === 'TabularSections'){
-            alert('Create tabular section for ' + MetadataName);
+            //alert('Create tabular section for ' + MetadataName);
+            CreateItem([FieldName,MetadataType,MetadataName, SubType1, SubType2,SubType3], ParentID);
         }
         else{
-            alert('Create 4 new  ' + SubType1);
+            //alert('Create 4 new  ' + SubType1);
+            CreateItem([FieldName,MetadataType,MetadataName, SubType1], ParentID);
 
         }    
     }    
 
     if (id_count == '4'){
-        
-            alert('Create 4 new  ' + SubType1);
+        CreateItem([FieldName,MetadataType,MetadataName, SubType1], CurrentID);
+        //    alert('Create 4 new  ' + SubType1);
     }    
     
     if (id_count == '3'){
         //alert('Create new  ' + MetadataType);
-        let parent_ob = document.getElementById(myOb.getAttribute('parent_id'));
-        newItem = document.createElement('div');
-        newItem.innerHTML = 'newItem';
-        parent_ob.appendChild(newItem);
+        CreateItem([FieldName,MetadataType], ParentID);
 
     }
     
     if (id_count == '2'){
-       
-            //alert('Create new  ' + MetadataType);
-
-            let parent_ob = document.getElementById(myOb.getAttribute('parent_id'));
-            newItem = document.createElement('div');
-            newItem.innerHTML = 'newItem';
-            parent_ob.appendChild(newItem);
-
+        CreateItem([FieldName,MetadataType], CurrentID, CurrentID);
 
     }    
     
 
 }
 
-function Tree_Menu_Delete(id) {
-    alert('Delete');
+function Tree_Menu_Create_Action(res, headers){
+
+    if (res.Result) {
+        
+        let words = res.Path.split('.')
+        let SubGroup = words[words.length-1]
+        console.log(SubGroup); 
+
+        let parent_ob = document.getElementById(headers.Component);
+        
+        SubItemName = res.Name;
+        FullName3 = res.Path + '.' + SubItemName;
+        DrawFirstLevelElement(parent_ob, SubItemName, SubItemName, 0, FullName3,"0" , SubGroup);
+
+
+
+        //newItem = document.createElement('div');
+        //newItem.innerHTML = res.Name;
+        //parent_ob.appendChild(newItem);
+    }
 }
+
+function Tree_Menu_Delete(id) {
+    let CurrentID = mytree1.selectedItem;
+    let myOb = document.getElementById(CurrentID);
+    let ParentID =myOb.getAttribute('parent_id');
+    
+
+    let FieldName = myOb.getAttribute('id0')      //1
+    let MetadataType = myOb.getAttribute('id1')   //2 - Catalogs, Documents, InformationRegisters
+    let MetadataName = myOb.getAttribute('id2')   //3  name of previous objects
+    let SubType1 = myOb.getAttribute('id3')       //4  Attributes, TabularSections, Forms, Commands, Templates
+    let SubType2 = myOb.getAttribute('id4')       //5  name of previous objects
+    let SubType3 = myOb.getAttribute('id5')       //6  name of Attributes of tabular sections
+    let SubType4 = myOb.getAttribute('id6')       //7  item - tabulat sec attribute
+
+    let id_count = myOb.getAttribute('id_count')       //7  
+
+    if (id_count =='7'){  //attrib of tab section
+        //alert('Create attribute for ' + MetadataName + " tab " + SubType2 + '  ' + SubType3);
+
+        DeleteItem([MetadataType,MetadataName, SubType1, SubType2,SubType3,SubType4], CurrentID, ParentID);
+    }    
+        
+    if (id_count == '5'){
+        if (SubType2 === 'TabularSections'){
+            //alert('Create tabular section for ' + MetadataName);
+            DeleteItem([MetadataType,MetadataName, SubType1, SubType2,SubType3], CurrentID, ParentID);
+        }
+        else{
+            //alert('Create 4 new  ' + SubType1);
+            DeleteItem([MetadataType,MetadataName, SubType1,SubType2], CurrentID, ParentID);
+
+        }    
+    }    
+
+     
+    if (id_count == '3'){
+        //alert('Create new  ' + MetadataType);
+        DeleteItem([MetadataType, MetadataName], CurrentID, ParentID);
+
+    }
+    
+}
+
+function DeleteItem(Path, CurrentID, ParentID){
+    console.log('Delete path')
+    console.log(Path)
+
+    adr = '' + SITE_ADRESS  + '' + Path.join('/');
+    newItemStructure = {}
+    
+    if (adr ==='') {
+        // ClearProperty()
+     }
+     else {
+         console.log('Delete property:')
+         console.log(adr)
+         
+         takeDateFromSite_Fetch(adr, Method='DELETE', Action='DeleteItem', Component = CurrentID, newItemStructure)
+     }  
+
+}
+function Tree_Menu_Delete_Action(res, headers){
+
+    console.log('Request result:')
+    console.log(res);
+
+
+}    
 
 function Tree_Menu_MoveUp(id) {
     alert('move up');

@@ -65,8 +65,7 @@ PropertyList = {
     }
 }
 
-def CreateDemo(Name : str):
-
+def CreateNewItem(Name : str):
     newItem = {
         'Properties': {},
         'Dimensions': {},
@@ -80,48 +79,21 @@ def CreateDemo(Name : str):
     newItem['Properties']['Synonym'] = {'Value': Name}
     newItem['Properties']['Comment'] = {'Value': ""}
 
-    newAttribute = {
-        "Name": "weight",
-        "type": 'Number',
-        "length": 15,
-        "dim": 0,
-        'format': "",
-        'indexed': False
-    }
-    newItem['Dimensions'][newAttribute['Name']] = newAttribute
+    return newItem
 
+def CreateDemo(Name : str):
 
-    newAttribute2 = {
-        "Name": "age",
-        "type": 'Number',
-        "length": 15,
-        "dim": 0,
-        'format': "",
-        'indexed': False
-    }
-    newItem['Resourses'][newAttribute2['Name']] = newAttribute2
+    newItem = CreateNewItem(Name)
 
-    newAttribute = {
-        "Name": {Types.PROP_VALUE:"Name"},
-        "type": {Types.PROP_VALUE:'String'},
-        "length": {Types.PROP_VALUE:15},
-        "dim": {Types.PROP_VALUE:0},
-        'format': {Types.PROP_VALUE:""},
-        'indexed': {Types.PROP_VALUE:False}
-    }
-    newItem['Attributes']['Name'] = newAttribute
+    newItem['Dimensions']['weight'] = Types.CreateNewAttribute_Number('weight')
+    newItem['Dimensions']['age'] = Types.CreateNewAttribute_Number('age')
 
+    newItem['Attributes']['Name'] = Types.CreateNewAttribute_String('Name')
 
-    newItem['Forms']['DocumentForm'] = {
-        "Name": {Types.PROP_VALUE:"DocumentForm"}
-    }
+    newItem['Forms']['DocumentForm'] = Types.CreateNewForm('DocumentForm')
 
     # COMMAND
-    newCommand = {'Name': {Types.PROP_VALUE:'OpenRegister'},
-                  'Synonym': {Types.PROP_VALUE:'Open'},
-                  'Comment': {Types.PROP_VALUE:''}
-                  }
-    newItem['Commands']['OpenRegister'] = newCommand
-    newItem['Templates']['Template1'] = {'Name': {Types.PROP_VALUE:'Template3'}}
+    newItem['Commands']['OpenRegister'] = Types.CreateNewCommand('OpenRegister')
+    newItem['Templates']['Template1'] = Types.CreateNewTemplate('Template1')
 
     return newItem

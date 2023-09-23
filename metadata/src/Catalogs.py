@@ -74,11 +74,7 @@ FormPropertyList = {
     }
 }
 
-
-
-def CreateDemo(Name : str):
-
-    res = {}
+def CreateNewItem(Name : str):
     newItem = {
         "Properties": {},
         "Attributes": {},
@@ -89,77 +85,39 @@ def CreateDemo(Name : str):
     }
 
     newItem['Properties']['Name'] = {
-        Types.PROP_VALUE : Name
+        Types.PROP_VALUE: Name
     }
     newItem['Properties']['Synonyme'] = {
-        Types.PROP_VALUE  : Name
+        Types.PROP_VALUE: Name
     }
+
+    return newItem
+
+def CreateDemo(Name : str):
+
+    res = {}
+    newItem = CreateNewItem(Name)
 
     # dd = {'Description': 'Goods'}
 
-    newItem['Attributes']['weight'] = {
-        Types.ATR_PROP_NAME_Name : {Types.PROP_VALUE  : "weight"},
-        Types.ATR_PROP_NAME_Type : {Types.PROP_VALUE  :'Number'},
-        Types.ATR_PROP_NAME_MaxLength : {Types.PROP_VALUE  :15},
-        Types.ATR_PROP_NAME_Precision : {Types.PROP_VALUE  :0},
-        Types.ATR_PROP_NAME_Format : {Types.PROP_VALUE  :""},
-        Types.ATR_PROP_NAME_Index : {Types.PROP_VALUE  :False}
-    }
+    newItem['Attributes']['weight'] = Types.CreateNewAttribute_Number('weight')
 
-    newItem['Attributes']['Fullname'] = {
-        Types.ATR_PROP_NAME_Name : {Types.PROP_VALUE  :"Fullname"},
-        Types.ATR_PROP_NAME_Type : {Types.PROP_VALUE  :'String'},
-        Types.ATR_PROP_NAME_MaxLength : {Types.PROP_VALUE  :50},
-        Types.ATR_PROP_NAME_Precision : {Types.PROP_VALUE  :0},
-        Types.ATR_PROP_NAME_Format : {Types.PROP_VALUE  :""},
-        Types.ATR_PROP_NAME_Index : {Types.PROP_VALUE  :False}
-    }
+    newItem['Attributes']['Fullname'] = Types.CreateNewAttribute_String('Fullname')
 
-    newItem['Forms']['ItemForm'] = {
-        "Name": {Types.PROP_VALUE  :"ItemForm"}
-    }
+    newItem['Forms']['ItemForm'] = Types.CreateNewForm('ItemForm')
 
     # TABULAR
-    newTabular = {
-        Types.PROP_Properties : {},
-        Types.PROP_Attributes : {}
-    }
+    newTabular = Types.CreateNewTabular('Good')
 
-    newTabular[Types.PROP_Properties]['Name'] = {Types.PROP_VALUE  :'Goods'}
-    newTabular[Types.PROP_Properties]['Synonym'] = {Types.PROP_VALUE  :'Goods'}
-    newTabular[Types.PROP_Properties]['Comment'] = {Types.PROP_VALUE  :''}
-
-    newTabular['Attributes']['Good'] = {
-        'Name': {Types.PROP_VALUE :'Good'}
-    }
-    newTabular['Attributes']['Count'] = {
-        'Name': {Types.PROP_VALUE :'Count'}
-    }
-    newTabular['Attributes']['Summ'] = {
-        'Name': {Types.PROP_VALUE :'Summ'}
-    }
+    newTabular['Attributes']['Good'] = Types.CreateNewAttribute_String('Good')
+    newTabular['Attributes']['Count'] = Types.CreateNewAttribute_Number('Count')
+    newTabular['Attributes']['Summ'] = Types.CreateNewAttribute_Number('Summ')
 
     newItem['TabularSections']['Goods'] = newTabular
 
     # COMMAND
-    newCommand = {
-        'Name': {
-            Types.PROP_VALUE  :'Open'
-        },
-        'Synonym': {
-            Types.PROP_VALUE  :'Open'
-        },
-        'Comment': {
-            Types.PROP_VALUE  :''
-        }
-    }
+    newItem['Commands']['Open'] = Types.CreateNewCommand('Open')
 
-    newItem['Commands']['Open'] = newCommand
-
-    newItem['Templates']['Template2'] = {
-        'Name': {
-            Types.PROP_VALUE  : 'Template2'
-        }
-    }
+    newItem['Templates']['Template2'] = Types.CreateNewTemplate('Template2')
 
     return newItem

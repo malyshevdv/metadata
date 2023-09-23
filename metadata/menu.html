@@ -10,8 +10,9 @@
 <script type="text/javascript" src="{{ url_for('metadata', path='/src/tree.js') }}"> </script>   
 <script type="text/javascript" src="{{ url_for('metadata', path='/src/property.js') }}"> </script>   
 <script type="text/javascript" src="{{ url_for('metadata', path='/src/myhttp.js') }}">  </script>  
+<!--
 <script type="text/javascript" src="{{ url_for('metadata', path='/src/metedata.js') }}">  </script>  
-
+-->
 
 
 <script>
@@ -72,71 +73,61 @@ function updateForm(newStr) {
     newDog.appendChild(h2);
 }        
    
-const SeeResult = function dd(res){
+const SeeResult = function dd(res, headers){
     console.log(res)
+    console.log(headers)
     //alert('Hello')
-
-    if (res.PropertyName === 'Name'){
-       let propItem = document.getElementById(myProp.id)
-       propItem.innerHTML = res.Value
-
-       //let ItemList = propItem.id.split('.');
-       let id_level = propItem.getAttribute('id_level');
-            
-       let ItemList = []
-       for (let ind=0; ind <= id_level; ind++) {
-        //console.log(item);
-        item = propItem.getAttribute('id'+ind);
-        ItemList.push('[id' + ind + '="'+ item + '"]');
-        }
-        
-        
-       let Selector = '' +  ItemList.join('') + ''
-        ItemList = document.querySelectorAll(Selector);
-        //sample - document.querySelectorAll('[id1=Catalogs][id2="Cusomers2"][id4="Goods"][id6="Count"]')
-       
-        ItemList.forEach((item, ind, arr) =>{
-            //let oldId = item.id;
-            //let ItemList = oldId.split('.');
-            
-            item.setAttribute('id'+ id_level , res.Value);
-
-            //ItemList[id_level] = res.Value;
-           // item.id = ItemList.join('.');
-
-        })
-
-
-       console.log(ItemList)
-       
-       /*
-       (true) {
-        res = document.querySelectorAll("[id0='" +ItemList[0] + "'] ")
-
-        res.forEach( (Item)=> {console.log(Item)}  )
-        */
-
-
-       //propItem.setAttribute('id', res.value);
-       //mytree1.selectedItem = res.new_id;
-
-       
-
-
-    }
-    return
-
 
     if (xhr.readyState == 4 && xhr.status == 200) {
 
-        Struct = JSON.parse(res.json());
-        TakeAction(Struct, options.headers);
+        //Struct = JSON.parse(res.json());
+        //TakeAction(Struct, options.headers);
         //print(Struct)    
     } 
     else {
         console.log(`Error: ${xhr.status}`);
     }
-    
+
+
+    if (headers.Action === 'SaveNewValue') {
+        if (res.PropertyName === 'Name'){
+        let propItem = document.getElementById(myProp.id)
+        propItem.innerHTML = res.Value
+
+        //let ItemList = propItem.id.split('.');
+        let id_level = propItem.getAttribute('id_level');
+                
+        let ItemList = []
+        for (let ind=0; ind <= id_level; ind++) {
+            //console.log(item);
+            item = propItem.getAttribute('id'+ind);
+            ItemList.push('[id' + ind + '="'+ item + '"]');
+            }
+            
+            
+        let Selector = '' +  ItemList.join('') + ''
+            ItemList = document.querySelectorAll(Selector);
+        
+            ItemList.forEach((item, ind, arr) =>{
+                item.setAttribute('id'+ id_level , res.Value);
+            })
+
+
+        console.log(ItemList)
+        }
+    }
+    if (headers.Action === 'NewItem') {
+        Tree_Menu_Create_Action(res, headers); 
+
+    }
+    if (headers.Action === 'DeleteItem') {
+        Tree_Menu_Create_Action(res, headers); 
+
+    }
+    return
+
+
+      
 }
 
 function takeDateFromSite_Fetch(adr, Method='GET', Action='', Component='', BodySctructure=undefined) {
@@ -159,7 +150,7 @@ function takeDateFromSite_Fetch(adr, Method='GET', Action='', Component='', Body
     // send post request
     fetch(adr, options)
       .then(res => res.json())
-      .then(res => SeeResult(res))
+      .then(res => SeeResult(res, options.headers))
       .catch(err => console.error(err))
 
 
@@ -304,6 +295,24 @@ const xhr = new XMLHttpRequest();
 let mytree1 = new TreeClass('mytree1');
 let myProp = new PropertyWin('property');
 console.log(mytree1.mydata);
+
+const sandwich = {
+    bread: "dutch crunch",
+    meat: "tuna",
+    cheese: "swiss",
+    toppings: ["lettuce", "tomato", "mustard"]
+   };
+   let { bread, meat2 } = sandwich;
+   bread = "garlic";
+   meat2 = "turkey";
+   console.log(bread); // garlic
+   console.log(meat2); // turkey
+   console.log(sandwich.bread, sandwich.meat);
+
+
+
+
+
 
 document.onkeydown = function(evt) {
     evt = evt || window.event;
