@@ -1,3 +1,6 @@
+'''
+ Basic types and consts for work ather modules
+ '''
 from sqlalchemy import String, NUMERIC, Integer, Boolean
 import metadata.src.Types as Types
 
@@ -120,6 +123,9 @@ addProp(AttributePropertyList, ATR_PROP_NAME_ReqiredField ,    BOOLEAN_TYPE , Fa
 
 
 def CreateNewAttribute_Number(Name : str):
+    '''
+     Add new NUMBER-attribute element to metadata object
+    '''
     NewItem = {
         ATR_PROP_NAME_Name: {PROP_VALUE: Name},
         ATR_PROP_NAME_Type: {PROP_VALUE: 'Number'},
@@ -132,6 +138,9 @@ def CreateNewAttribute_Number(Name : str):
     return NewItem
 
 def CreateNewAttribute_String(Name : str):
+    '''
+     Add new STRING-attribute element to metadata object
+    '''
     NewItem = {
         ATR_PROP_NAME_Name: {PROP_VALUE: Name},
         ATR_PROP_NAME_Type: {PROP_VALUE: 'String'},
@@ -144,6 +153,9 @@ def CreateNewAttribute_String(Name : str):
 
 
 def CreateNewTabular(Name : str):
+    '''
+     Add new tabular section to metadata object
+    '''
     newTabular = {
         PROP_Properties : {},
         PROP_Attributes : {}
@@ -156,6 +168,9 @@ def CreateNewTabular(Name : str):
     return newTabular
 
 def CreateNewCommand(Name : str):
+    '''
+     Add new Command to metadata object
+    '''
     NewItem = {
         'Name': {
             PROP_VALUE: Name
@@ -170,6 +185,10 @@ def CreateNewCommand(Name : str):
     return NewItem
 
 def CreateNewTemplate(Name : str):
+    '''
+     Add new template to metadata object with current unique name
+    '''
+
     NewItem = {
         'Name': {
             PROP_VALUE: Name
@@ -184,6 +203,9 @@ def CreateNewTemplate(Name : str):
     return NewItem
 
 def CreateNewForm(Name : str):
+    '''
+     Add new dialog form to metadata object with current unique name
+    '''
     NewItem = {
         'Name': {
             PROP_VALUE: Name

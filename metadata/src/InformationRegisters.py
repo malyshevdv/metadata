@@ -1,3 +1,6 @@
+'''
+InfoRegs-module describe CONSTS and Classes to work with Information registers
+'''
 import metadata.src.Catalogs as Catalogs
 import metadata.src.Types as Types
 
@@ -66,6 +69,10 @@ PropertyList = {
 }
 
 def CreateNewItem(Name : str):
+    '''
+     Add new information register with current unique name
+    '''
+
     newItem = {
         'Properties': {},
         'Dimensions': {},
@@ -82,6 +89,10 @@ def CreateNewItem(Name : str):
     return newItem
 
 def CreateDemo(Name : str):
+    '''
+     Create new DEMO information register with current unique name with predefined properties
+    '''
+
 
     newItem = CreateNewItem(Name)
 

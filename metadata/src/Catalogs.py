@@ -1,3 +1,7 @@
+'''
+Catalogs-module describe CONSTS and Classes to work with Catalogs
+'''
+
 import metadata.src.Types as Types
 import metadata.src.Commands as Commands
 import metadata.src.Templates as Templates
@@ -75,6 +79,9 @@ FormPropertyList = {
 }
 
 def CreateNewItem(Name : str):
+    '''
+    Create a new metadata Catalog item in metadata tree with a current name.
+    '''
     newItem = {
         "Properties": {},
         "Attributes": {},
@@ -94,6 +101,11 @@ def CreateNewItem(Name : str):
     return newItem
 
 def CreateDemo(Name : str):
+    '''
+    Create a new DEMO metadata Catalog item in
+    metadata tree with a current name with predefines
+    properties, tabular forms, commands.
+    '''
 
     res = {}
     newItem = CreateNewItem(Name)

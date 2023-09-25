@@ -1,3 +1,10 @@
+'''
+main module of medatata editor
+to work with FastApi
+clone in into youe project and fun FastApi with port-number
+Port in this module and in menu.html musk be same.
+'''
+
 from typing import Annotated
 from pydantic import BaseModel
 

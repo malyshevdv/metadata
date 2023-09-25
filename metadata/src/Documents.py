@@ -1,6 +1,10 @@
+'''
+Documents-module describe CONSTS and Classes to work with Documents
+'''
 import metadata.src.Types as Types
 
 PropertyList = {
+
     'Name':{
         'Type': Types.STRING_TYPE,
         'DefaultValue': 'Catalog1'
@@ -83,6 +87,10 @@ PropertyList = {
 
 }
 def CreateNewItem(Name : str):
+    '''
+     Create new document with current unique name
+    '''
+
     newItem = {
         'Properties': {},
         'Attributes': {},
@@ -97,6 +105,9 @@ def CreateNewItem(Name : str):
     return newItem
 
 def CreateDemo(Name : str):
+    '''
+     Create new DOMO document with predefined properties
+    '''
 
     newItem = CreateNewItem(Name)
 
