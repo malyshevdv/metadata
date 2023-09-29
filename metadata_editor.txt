@@ -1,6 +1,3 @@
-from metadata import *
-Trying:
- getNextName('dsdsd')
-Expecting:
- 5
-ok
+>>>from metadata.metadata_editor import *
+>>>Add(1,3)
+4

@@ -133,3 +133,7 @@ def CreateDemo(Name : str):
     newItem['Templates']['Template2'] = Types.CreateNewTemplate('Template2')
 
     return newItem
+
+def addInfo(x, y):
+    print('Function => ')
+    return x + y

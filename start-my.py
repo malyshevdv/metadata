@@ -1,6 +1,5 @@
-dd = 'sdsdsds'
-print(dd[3:4])
-temp = dd[3]
-dd[3] = dd[4]
-dd[4] = temp
-print(dd[3])
+import sys
+#sys.path.append('C:\\WORK\\PycharmProjects\\metadata\\metadata\\src')
+sys.path.append('')
+
+print(sys.path)

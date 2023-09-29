@@ -3,6 +3,10 @@ main module of medatata editor
 to work with FastApi
 clone in into youe project and fun FastApi with port-number
 Port in this module and in menu.html musk be same.
+
+get a menu to work with metadata-editoe interface.
+lets you discribe metadata structure of youe project without codding
+after finnishing - you can generate PY models files for SQLAlchimy automaticaly
 '''
 
 from typing import Annotated
@@ -53,11 +57,13 @@ template = Jinja2Templates(directory="metadata")
 
 def proba():
     return '<div>MAIN PROBA</div>'
-@app.get("/", response_class=HTMLResponse) #******************************************************
+@app.get("/", tags=['settings'], response_class=HTMLResponse) #******************************************************
 async def read_root(request: Request):
-    #response.headers['Access-Control-Allow-Origin'] = "*"
-    #return "<html><body>fdfd</body></html>"
-    inveronment = jinja2.Environment(loader=jinja2.FileSystemLoader("templates/"))
+    '''
+      get a menu to work with metadata-editoe interface.
+      lets you discribe metadata structure of youe project without codding
+      after finnishing - you can generate PY models files for SQLAlchimy automaticaly
+      '''
 
     students = 0
     test_name = 0
@@ -68,9 +74,6 @@ async def read_root(request: Request):
         "max_score": max_score,
     }
 
-    #return templates.TemplateResponse('menu.html', context={"ddd":'ddd', "request":request})
-    #dd = template.render(context)
-    #url_for = ""
     proba2  = "HELLO PROBAB"
     return template.TemplateResponse('menu.html',
                                      context={
@@ -80,8 +83,12 @@ async def read_root(request: Request):
                                      }
                                      )
 
-@app.get("/tree/")  #******************************************************
+@app.get("/tree/", tags=['settings'])  #******************************************************
 async def read_tree(request: Request):
+    '''
+      get a complete tree from backed to frontend
+    '''
+
     res = {'Action' : 'RedrawTree',
            'Tree' : data
            }
@@ -89,6 +96,9 @@ async def read_tree(request: Request):
     return json.dumps(res)
 
 class CreateModel2(BaseModel):
+    '''
+    structur model for PUT-request CreateItem
+    '''
     Action: str = 'new'
     Name : str = ''
     Path : str = ''
@@ -97,6 +107,12 @@ class CreateModel2(BaseModel):
 
 
 def getNextName(Path : str):
+    '''
+     get a new possible name of object, described in Path
+     for Catalogs -> NewCatalog2
+     for Documents -> NewDocument5
+    '''
+
     words = Path.split('.')
     TypeName = words[-1]
     NewName = Types.MetadataTypes[TypeName].get('NewItemName', 'NewItem')
@@ -125,8 +141,14 @@ def getNextName(Path : str):
 
 # PUT  - CREATE NEW OBJECT
 
-@app.put("/CreateItem/")  #*********************************************
-async def create_new_item0(Instruction : CreateModel2):
+@app.put("/CreateItem/", tags=['Items'])  #*********************************************
+async def create_new_item(Instruction : CreateModel2):
+    '''
+      PUT handler for /CreateItem/
+      describe Path of new onject inside of Instruction.Path
+      like a mytree1.InformationRegisters.Attributes
+      and as resunt new Attribute will be added
+     '''
 
     ss = 0
     Instruction.Name = 'NewItem1'
@@ -138,6 +160,9 @@ async def create_new_item0(Instruction : CreateModel2):
     return Instruction
 
 def create_new_item_simple(Instruction : CreateModel2):
+    '''
+     body of main function for append new clear object
+    '''
 
     words = Instruction.Path.split('.')
     Instruction.Name = getNextName(Instruction.Path)
@@ -187,12 +212,11 @@ def create_new_item_simple(Instruction : CreateModel2):
 #     3 LEVEL    *********************************************
 #
 
-@app.get("/{MetadataType}/{MetadataName}/Properties")  #*********************************************
+@app.get("/{MetadataType}/{MetadataName}/Properties", tags=['Properties'])  #*********************************************
 async def read_properties(MetadataType: str, MetadataName : str, request: Request) :
     '''
+    tekes an information about one current catalogcatalog
     Sample: Catalogs/Goods/Properties   - get a propertylist of the Goods catalog.
-
-     tekes an information about one current catalogcatalog
      :param request: CatalogName
      :return: JSON of current Catalog structure
      '''
@@ -211,10 +235,11 @@ async def read_properties(MetadataType: str, MetadataName : str, request: Reques
            }
     return json.dumps(res)
 
-class IgnoredType:
-    pass
-
 class EditItem(BaseModel):
+    '''
+      data-structure for transfere new values of edited properties from front-end to backend
+     '''
+
     #Name: str = ''
     Value: str = ''
     ValueType: str = ''
@@ -239,16 +264,22 @@ class EditItem(BaseModel):
 #
 
 #
-@app.post("/{MetadataType}/{MetadataName}/{ItemType}/{PropertyName}")  #*********************************************
+@app.post("/{MetadataType}/{MetadataName}/{ItemType}/{PropertyName}", tags=['Properties'])  #*********************************************
 async def edit_one_MetadataName_property_enter_3_level(
         MetadataType: str,
         MetadataName: str,
         ItemType : str,
         PropertyName: str,
         newValue : EditItem) :
+    '''
+      POST request handler to save edited value of object property
+      sample InformationRegisters/Prices/Attributes/Customer
+      sample InformationRegisters/Prices/Properties/Name
+      sample Catalogs.Goods.Property.Synonim
+     '''
 
-    # sample Catalogs.Goods.Property.Synonim
-   new_struct = {
+
+    new_struct = {
        'MetadataType' : MetadataType,
        'MetadataName' : MetadataName,
        'ItemType' : ItemType,
@@ -257,10 +288,10 @@ async def edit_one_MetadataName_property_enter_3_level(
        'LevelPropName': ''
     }
 
-   edit_one_MetadataName_property(newValue, new_struct)
+    edit_one_MetadataName_property(newValue, new_struct)
 
-   return newValue
-@app.post("/{MetadataType}/{MetadataName}/{ItemType}/{PropertyName}/{LevelType}/{LevelPropName}")  # *********************************************
+    return newValue
+@app.post("/{MetadataType}/{MetadataName}/{ItemType}/{PropertyName}/{LevelType}/{LevelPropName}", tags=['Properties'])  # *********************************************
 async def edit_one_MetadataName_property_enter_5_level(
         MetadataType: str,
         MetadataName: str,
@@ -269,7 +300,11 @@ async def edit_one_MetadataName_property_enter_5_level(
         LevelType: str,
         LevelPropName: str,
         newValue: EditItem):
-    # sample Catalogs.Goods.Property.Synonim
+    '''
+          POST request handler to save edited value of object property for 6-th level sach as Tabular section
+          sample Documents/Prices/TabularSection/Attributes/Count
+          sample Catalogs/Goods/TabularSection/Properties/Name/
+    '''
     new_struct = {
         'MetadataType': MetadataType,
         'MetadataName': MetadataName,
@@ -285,8 +320,10 @@ async def edit_one_MetadataName_property_enter_5_level(
 
 
 def edit_one_MetadataName_property(newValue : EditItem, new_struct : dict):
-
-
+    '''
+    Basic module for editing values of property
+    also it makes Rename function of metadata nopredefined elements
+    '''
     MetadataType = new_struct['MetadataType']
     MetadataName = new_struct['MetadataName']
     ItemType = new_struct['ItemType']   #Attributes/Properties/TabularSections/Forms
@@ -314,10 +351,6 @@ def edit_one_MetadataName_property(newValue : EditItem, new_struct : dict):
             MetadataName = newValueRes
             newValue.Res = data[MetadataType][MetadataName][ItemType][newValue.PropertyName]['Value']
 
-
-
-
-
     else:         # 5-th level
 
         if new_struct['LevelType'] == '':
@@ -337,10 +370,6 @@ def edit_one_MetadataName_property(newValue : EditItem, new_struct : dict):
                 data[MetadataType][MetadataName][ItemType].pop(PropertyName)
                 PropertyName = newPropertyName
                 newValue.Res = data[MetadataType][MetadataName][ItemType][PropertyName][newValue.PropertyName]['Value']
-
-
-
-
 
         elif new_struct['LevelType'] == 'Properties':
             # tabular section property
@@ -381,11 +410,7 @@ def edit_one_MetadataName_property(newValue : EditItem, new_struct : dict):
                 newValue.Res = data[MetadataType][MetadataName][ItemType][PropertyName][LevelType][LevelPropName][newValue.PropertyName]['Value']
 
 
-
-    dd = 0
-
-
-@app.get("/{MetadataType}/{MetadataName}/{ItemType}/{PropertyName}/Properties")  #********************************
+@app.get("/{MetadataType}/{MetadataName}/{ItemType}/{PropertyName}/Properties", tags=['Properties'])  #********************************
 async def read_property5(
         MetadataType: str,
         MetadataName: str,
@@ -393,11 +418,10 @@ async def read_property5(
         PropertyName : str  ,
         request: Request  ):
     '''
-    sample   http://127.0.0.1:8084/Catalogs/Goods/Attributes/weight/Properties
-
-     tekes an information about one all catalog propertys
+     tekes an information about one all PropertyName properties
      :param request: CatalogName
      :return: JSON of current Catalog structure
+     sample   http://127.0.0.1:8084/Catalogs/Goods/Attributes/weight/Properties
      '''
     return read_property5_test(MetadataType, MetadataName, ItemType, PropertyName , request)
 
@@ -407,7 +431,10 @@ def read_property5_test(
             ItemType: str,
             PropertyName: str,
             request: Request):
-
+    '''
+      main procedure to returm propertu for upper described function
+      that return property list
+    '''
     PropList = {}
     if MetadataType == Types.METADATA_CATALOGS:
         if ItemType == 'Attributes':
@@ -439,7 +466,7 @@ def read_property5_test(
            }
     return json.dumps(res)
 
-@app.get("/{MetadataType}/{MetadataName}/{ItemType}/{PropertyName}/Attributes/{AttributeName}")
+@app.get("/{MetadataType}/{MetadataName}/{ItemType}/{PropertyName}/Attributes/{AttributeName}", tags=['Attributes'])
 async def read_propertyTS7(
         MetadataType: str,
         MetadataName: str,
@@ -458,32 +485,65 @@ async def read_propertyTS7(
     return json.dumps(res)
 
 
+@app.get("/css/", tags=['settings'])
+async def read_CSS(request: Request):
+    '''
+    get a CSS file for MENU.HTML - metadata/menu.css
+    :param request: NO
+    :return: CSS-file as text
+    '''
 
-
-
-
-
-@app.get("/css/")
-async def read_items(request: Request):
-    ss = '22'
+    myString = ''
     with open('metadata/menu.css', mode='r') as file:
         try:
-            ss = file.read()
+            myString = file.read()
         except:
-            ss = 'error'
-    return ss
+            myString = 'error'
+    return myString
 
-@app.delete('/{MetadataType}/{MetadataName}')
+#**************************************
+# DELETE METADATA SECTION
+#**************************************
+
+@app.delete('/{MetadataType}/{MetadataName}', tags=['Items'])
 async def deleteItem_2(MetadataType: str, MetadataName : str):
+    '''
+    delete metadata of 2-th level - such as Catalogs, Documents and Information registers items
+    :param MetadataType:
+    :param MetadataName:
+    :return: dictionary Result=True - as successfull case
+    sample: /Catalogs/Goods
+    '''
+
     data[MetadataType].pop(MetadataName)
     return {'Result' : True}
 
-@app.delete('/{MetadataType}/{MetadataName}/{lev1}/{lev2}')
-async def deleteItem_2(MetadataType: str, MetadataName : str, lev1 : str, lev2 : str):
+@app.delete('/{MetadataType}/{MetadataName}/{lev1}/{lev2}', tags=['Items'])
+async def deleteItem_4(MetadataType: str, MetadataName : str, lev1 : str, lev2 : str):
+    '''
+        delete metadata of 4-th level - such as Attributes items, Forms items etc.
+        :param MetadataType:
+        :param MetadataName:
+        :param lev1:
+        :param lev2:
+        :return: dictionary Result=True - as successfull case
+        sample: /Catalogs/Goods/Attributes/TableStyle
+        '''
+
     data[MetadataType][MetadataName][lev1].pop(lev2)
     return {'Result' : True}
-@app.delete('/{MetadataType}/{MetadataName}/{lev1}/{lev2}/{lev3}')
-async def deleteItem_2(MetadataType: str, MetadataName : str, lev1 : str, lev2 : str, lev3 : str):
+@app.delete('/{MetadataType}/{MetadataName}/{lev1}/{lev2}/{lev3}', tags=['Items'])
+async def deleteItem_5(MetadataType: str, MetadataName : str, lev1 : str, lev2 : str, lev3 : str):
+    '''
+         delete metadata of 5-th level - such as Attributes of Tabular sections
+         :param MetadataType:
+         :param MetadataName:
+         :param lev1:
+         :param lev2:
+         :param lev3:
+         :return: dictionary Result=True - as successfull case
+         sample: /Catalogs/Goods/TabularSections/Goods/Description
+         '''
     data[MetadataType][MetadataName][lev1][lev2].pop(lev3)
     return {'Result' : True}
 
@@ -523,7 +583,11 @@ class CatalogItem:
         return ''
 
 def readConfig():
+    '''
+    read saved YAML config file from storage
 
+    :return:
+    '''
     if not os.path.exists(ConfigFile):
         yaml_output = yaml.dump(data, sort_keys=False)
 
@@ -546,6 +610,10 @@ def print_hi(name):
     readConfig()
 
 def TestEditProperty():
+    '''
+    test function - to debug Edit property process
+    :return:
+    '''
     new_struct = {
         'MetadataType': 'Catalogs',
         'MetadataName': 'Goods',
@@ -576,8 +644,25 @@ def TestEditProperty():
     newVal.PropertyName = 'Name'
     edit_one_MetadataName_property(newVal, new_struct)
 
+def Add(a : int,b : int):
+    """
+
+    :param a:
+    :param b:
+    :return:
+    TEST
+    >>> Add(2,4)
+    6
+    >>> (Add(2,2) - Add(2,2)) == 0
+    True
+    """
+    return a + b
 
 def TestCreateItem():
+    '''
+      test function - to debug CreateItem process
+      :return:
+    '''
 
     TestData = CreateModel2()
     TestData.Path = 'mytree1.InformationRegisters.Attributes'
@@ -611,3 +696,6 @@ if __name__ == '__main__':
     dd = read_property5_test('Documents','Invoice', 'Attributes', 'Fullname', '')
     print(dd)
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+
+

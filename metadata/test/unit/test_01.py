@@ -1,3 +1,6 @@
+import pytest
+
+
 def addInfo(x, y):
     print('Function => ')
     return x + y
@@ -45,6 +48,26 @@ def tearDown():
     """called multiple times, after every test method"""
     print("In tearDown()...")
 
-if __name__ == '__main__2':
+
+@pytest.fixture(scope='function')
+def my_fixture009(request):
+    print('==============')
+    print('My fixture 009')
+    print("Fixture Scope: " + str(request.scope))
+    print("Function Name: " + str(request.function))
+    #print("Class Name: " + str(request.cls))
+    #print("Module Name: " + str(request.module.name))
+    print("File Path: " + str(request.fspath))
+
+    def fin():
+        print('Finalize texture 009')
+        print('==============')
+
+    request.addfinalizer(fin)
+
+def test_009(my_fixture009):
+    print('My test 009')
+
+if __name__ == '__main__':
     #unittest.main(verbosity=3)
     print('test01')

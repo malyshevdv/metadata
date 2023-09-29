@@ -1,6 +1,6 @@
 import unittest
 import inspect
-import metadata.src.Catalogs as Catalogs
+import src.Catalogs as Catalogs
 import sys
 
 def setUpModule():
