@@ -1,0 +1,6 @@
+from metadata import *
+Trying:
+ getNextName('dsdsd')
+Expecting:
+ 5
+ok
