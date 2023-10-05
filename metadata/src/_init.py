@@ -1,6 +1,6 @@
 #from . import Catalogs, Types
 
-all = ['Catalogs, Types']
+all = ['test_createCatalogs2']
 
 
 

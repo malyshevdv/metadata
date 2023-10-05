@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>MD-editor</title>
     <link href="{{ url_for('metadata', path='/menu.css') }}" rel="stylesheet">
 
 
@@ -344,7 +344,7 @@ document.onkeydown = function(evt) {
 
 
 <body>
-    <input type="button" title="Press" onclick="createTree1()"> 
+    <input type="button" title="Start Generate metadata tree" onclick="createTree1()"> 
 
 
     <b>Tree</b>    
@@ -353,7 +353,9 @@ document.onkeydown = function(evt) {
         <div id = "mytree1" class="tree-box">
             
         </div>
-        
+        <div id = "mytree1-leftpanel" class="vertical-panel">
+        </div>
+
         <div id = "mytree3" class="area">
         </div>
 

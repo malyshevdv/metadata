@@ -20,8 +20,10 @@ from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 from fastapi.middleware.gzip import GZipMiddleware
 from sqlalchemy import JSON
+import logging
 
 #import metadata.testdata
+import metadata.src.Metadata as Metadata
 import metadata.src.Catalogs as Catalogs
 import metadata.src.Documents as Documents
 import metadata.src.InformationRegisters as InformationRegisters
@@ -47,6 +49,15 @@ data = GetTestTree()
 
 
 
+myLogging = logging.getLogger('Editing')
+myLogging.setLevel(logging.INFO)
+
+myFileHandler = logging.FileHandler('metadata\\logs\\mylog.txt', encoding='utf-8')
+myFormatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+myFileHandler.setFormatter(myFormatter)
+myFileHandler.setLevel(logging.INFO)
+myLogging.addHandler(myFileHandler)
+
 app = FastAPI()
 app.mount("/metadata", StaticFiles(directory="metadata"), name="metadata")
 
@@ -55,8 +66,6 @@ app.add_middleware(GZipMiddleware)
 
 template = Jinja2Templates(directory="metadata")
 
-def proba():
-    return '<div>MAIN PROBA</div>'
 @app.get("/", tags=['settings'], response_class=HTMLResponse) #******************************************************
 async def read_root(request: Request):
     '''
@@ -64,6 +73,8 @@ async def read_root(request: Request):
       lets you discribe metadata structure of youe project without codding
       after finnishing - you can generate PY models files for SQLAlchimy automaticaly
       '''
+
+    myLogging.error('read tree')
 
     students = 0
     test_name = 0
@@ -78,8 +89,7 @@ async def read_root(request: Request):
     return template.TemplateResponse('menu.html',
                                      context={
                                          "ddd":'ddd',
-                                         "request":request,
-                                         'proba' : proba
+                                         "request":request
                                      }
                                      )
 
@@ -644,19 +654,6 @@ def TestEditProperty():
     newVal.PropertyName = 'Name'
     edit_one_MetadataName_property(newVal, new_struct)
 
-def Add(a : int,b : int):
-    """
-
-    :param a:
-    :param b:
-    :return:
-    TEST
-    >>> Add(2,4)
-    6
-    >>> (Add(2,2) - Add(2,2)) == 0
-    True
-    """
-    return a + b
 
 def TestCreateItem():
     '''
@@ -676,25 +673,25 @@ def TestCreateItem():
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-    ss =  data['Catalogs']['Goods']['Properties']
-    sss = data['Catalogs']['Goods']['Attributes']['weight']
-    aa = 0
 
-    #newValue = Item()
-    #newValue.setNew('Catalogs', '123', 'Catalogs.Goods','Comment')
+    #create test date
+    MD = Metadata.Metadata()
 
-    #test to edit property
-    #TestEditProperty()
+    MD.Catalogs.CreateObject()
+    MD.Catalogs.CreateObject()
+    print('Catalogs=' + str(len(MD.Catalogs.Items)))
 
-    #test to crete new item
-    TestCreateItem()
 
-    dd = [['a'], ['b']]
-    print(dd)
+    MD.Documents.CreateObject()
+    MD.Documents.CreateObject()
 
-    dd = read_property5_test('Documents','Invoice', 'Attributes', 'Fullname', '')
-    print(dd)
+    MD.InformationRegisters.CreateObject()
+    MD.InformationRegisters.CreateObject()
+
+    print(MD.Catalogs)
+    print(MD.Documents)
+    print(MD.InformationRegisters)
+
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 
 

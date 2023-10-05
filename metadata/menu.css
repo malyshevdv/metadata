@@ -115,6 +115,15 @@ th{
     flex-grow: 8;
 }
 
+.vertical-panel {
+    cursor: col-resize;
+    background: blue;
+    border: 2px black solid;
+    width: 20px;
+    height: 50px;
+}
+
+
 .md-property{
     /*width: 300px;*/
     flex-grow: 1;

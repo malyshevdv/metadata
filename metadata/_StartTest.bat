@@ -1,0 +1,1 @@
+ py.test  -vs metadata/src/

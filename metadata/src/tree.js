@@ -1,5 +1,56 @@
 //import * from {/metadata/metadata}
 
+class Metadata{
+
+    constructor(){
+        this.Catalogs = Object<Catalog>{};
+        this.Documents = Object<Document>{};
+        this.InformationRegisters = Object<InformationRegister>{};
+    }
+
+}
+
+class MetadataObject{
+    constructor(Name, metadata){
+        this.Name = Name;
+        this.RootMetadata = metadata;
+    }
+    rename(Newname){
+        this.Name = Newname;
+    }
+    getPropertyList(){
+        res = []
+        return res;
+    }
+
+}
+
+class Catalog extends MetadataObject {
+    constructor(){
+        pass
+    }
+    
+    NewObject(){
+
+    }
+
+}
+
+
+class Document extends MetadataObject {
+    constructor(){
+        pass
+    }
+
+}
+
+class InformationRegister extends MetadataObject {
+    constructor(){
+        pass
+    }
+
+}
+
 class TreeClass {
     constructor (name) {
         this.name = name;
@@ -11,6 +62,7 @@ class TreeClass {
         this.list_id = [];
         this.JSON_string = '';
         this.NextCount = 0;
+        
     }
 
     get_list_id() {
@@ -111,24 +163,34 @@ function drawMenuButton(parentContainer, CommandName, ShowTitle = true){
     img = document.createElement('img');
     
     if (CommandName === 'Delete') {
-        img.setAttribute('src','/metadata/delete.png')
+        img.setAttribute('src','/metadata/images/delete.png')
         menu_bar_item.setAttribute('OnClick', 'Tree_Menu_Delete(id)');
+        menu_bar_item.setAttribute('title', 'Delete object');
     }
     if (CommandName === 'Create') {
-        img.setAttribute('src','/metadata/create.png')
+        img.setAttribute('src','/metadata/images/create.png')
         menu_bar_item.setAttribute('OnClick', 'Tree_Menu_Create(id)');
+        menu_bar_item.setAttribute('title', 'Create object');
     }
     if (CommandName === 'MoveUp') {
-        img.setAttribute('src','/metadata/arrow-up.png')
+        img.setAttribute('src','/metadata/images/arrow-up.png')
         menu_bar_item.setAttribute('OnClick', 'Tree_Menu_MoveUp(id)');
+        menu_bar_item.setAttribute('title', 'Move object UP');
     }
     if (CommandName === 'MoveDown') {
-        img.setAttribute('src','/metadata/arrow-down.png')
+        img.setAttribute('src','/metadata/images/arrow-down.png')
         menu_bar_item.setAttribute('OnClick', 'Tree_Menu_MoveDown(id)');
+        menu_bar_item.setAttribute('title', 'Move object DOWN');
     }
     if (CommandName === 'Refresh') {
-        img.setAttribute('src','/metadata/refresh.png')
+        img.setAttribute('src','/metadata/images/refresh.png')
         menu_bar_item.setAttribute('OnClick', 'Tree_Menu_Refresh(id)');
+        menu_bar_item.setAttribute('title', 'Refresh tree');
+    }
+    if (CommandName === 'Generate') {
+        img.setAttribute('src','/metadata/images/ExternalData.png')
+        menu_bar_item.setAttribute('OnClick', 'Generate(id)');
+        menu_bar_item.setAttribute('title', 'Generate ORM module');
     }
     
     img.setAttribute('width','16px')
@@ -167,6 +229,7 @@ function RedrawTree(myTree) {
     drawMenuButton(menu_bar,'MoveUp', false);
     drawMenuButton(menu_bar,'MoveDown', false);
     drawMenuButton(menu_bar,'Refresh', false);
+    drawMenuButton(menu_bar,'Generate', false);
 
 
     container.appendChild(menu_bar);
