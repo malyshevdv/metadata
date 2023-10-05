@@ -1,0 +1,1 @@
+uvicorn metadata_editor:app --reload --port 8082
