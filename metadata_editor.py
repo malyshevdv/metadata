@@ -23,14 +23,8 @@ from sqlalchemy import JSON
 import logging
 
 #import metadata.testdata
+import metadata.src.Types as Types
 import metadata.src.Metadata as Metadata
-import metadata.src.Catalogs as Catalogs
-import metadata.src.Documents as Documents
-import metadata.src.InformationRegisters as InformationRegisters
-import metadata.src.Forms as Forms
-import metadata.src.Commands as Commands
-import metadata.src.Templates as Templates
-import metadata.src.TabularSections as TabularSections
 
 
 import uvicorn
@@ -42,10 +36,10 @@ import metadata.src.Types as Types
 
 
 ConfigFile = 'metadata.yaml'
-data = {"Catalogs": [], "Documents": [], "InformationRegisters": []}
+#data = {"Catalogs": [], "Documents": [], "InformationRegisters": []}
 portNumber = '8082'
 
-data = GetTestTree()
+myMetadata = GetTestTree()
 
 
 
@@ -99,6 +93,8 @@ async def read_tree(request: Request):
       get a complete tree from backed to frontend
     '''
 
+    data = myMetadata.GetTreeStructure()
+
     res = {'Action' : 'RedrawTree',
            'Tree' : data
            }
@@ -122,7 +118,7 @@ def getNextName(Path : str):
      for Catalogs -> NewCatalog2
      for Documents -> NewDocument5
     '''
-
+    data = {}
     words = Path.split('.')
     TypeName = words[-1]
     NewName = Types.MetadataTypes[TypeName].get('NewItemName', 'NewItem')
@@ -173,7 +169,7 @@ def create_new_item_simple(Instruction : CreateModel2):
     '''
      body of main function for append new clear object
     '''
-
+    data = {}
     words = Instruction.Path.split('.')
     Instruction.Name = getNextName(Instruction.Path)
 
@@ -230,13 +226,14 @@ async def read_properties(MetadataType: str, MetadataName : str, request: Reques
      :param request: CatalogName
      :return: JSON of current Catalog structure
      '''
+    data = {}
     PropertyList = {}
     if MetadataType == 'Catalogs' :
-        PropertyList = Catalogs.PropertyList
+        PropertyList = Types.CatalogPropertyList
     elif MetadataType == 'Documents':
-        PropertyList = Documents.PropertyList
+        PropertyList = Types.DocumentPropertyList
     elif MetadataType == 'InformationRegisters':
-        PropertyList = InformationRegisters.PropertyList
+        PropertyList = Types.InformationRegisterPropertyList
 
     ff = f'/{MetadataType}/{MetadataName}/Properties'
     res = {'requestPath': ff,
@@ -334,6 +331,9 @@ def edit_one_MetadataName_property(newValue : EditItem, new_struct : dict):
     Basic module for editing values of property
     also it makes Rename function of metadata nopredefined elements
     '''
+
+    data = {}
+
     MetadataType = new_struct['MetadataType']
     MetadataName = new_struct['MetadataName']
     ItemType = new_struct['ItemType']   #Attributes/Properties/TabularSections/Forms
@@ -455,7 +455,8 @@ def read_property5_test(
     elif MetadataType == Types.METADATA_INFOREG:
         pass
 
-    Value = data[MetadataType][MetadataName][ItemType][PropertyName]
+    #Value = data[MetadataType][MetadataName][ItemType][PropertyName]
+    Value = ''
 
     if ItemType == 'Attributes':
         PropList = Types.AttributePropertyList
@@ -486,8 +487,8 @@ async def read_propertyTS7(
         request: Request  ):
 
     PropList = Types.AttributePropertyList
-    Value = data[MetadataType][MetadataName][ItemType][PropertyName]['Attributes'][AttributeName]
-
+    #Value = data[MetadataType][MetadataName][ItemType][PropertyName]['Attributes'][AttributeName]
+    Value = ''
     res = {'requestPath': '/Catalogs/{dddd}/Property',
            Types.PROP_VALUE: Value,
            'PropertyList': PropList
@@ -525,7 +526,7 @@ async def deleteItem_2(MetadataType: str, MetadataName : str):
     sample: /Catalogs/Goods
     '''
 
-    data[MetadataType].pop(MetadataName)
+    #data[MetadataType].pop(MetadataName)
     return {'Result' : True}
 
 @app.delete('/{MetadataType}/{MetadataName}/{lev1}/{lev2}', tags=['Items'])
@@ -540,7 +541,7 @@ async def deleteItem_4(MetadataType: str, MetadataName : str, lev1 : str, lev2 :
         sample: /Catalogs/Goods/Attributes/TableStyle
         '''
 
-    data[MetadataType][MetadataName][lev1].pop(lev2)
+    #data[MetadataType][MetadataName][lev1].pop(lev2)
     return {'Result' : True}
 @app.delete('/{MetadataType}/{MetadataName}/{lev1}/{lev2}/{lev3}', tags=['Items'])
 async def deleteItem_5(MetadataType: str, MetadataName : str, lev1 : str, lev2 : str, lev3 : str):
@@ -554,7 +555,7 @@ async def deleteItem_5(MetadataType: str, MetadataName : str, lev1 : str, lev2 :
          :return: dictionary Result=True - as successfull case
          sample: /Catalogs/Goods/TabularSections/Goods/Description
          '''
-    data[MetadataType][MetadataName][lev1][lev2].pop(lev3)
+    #data[MetadataType][MetadataName][lev1][lev2].pop(lev3)
     return {'Result' : True}
 
 
@@ -619,28 +620,6 @@ def print_hi(name):
 
     readConfig()
 
-def TestEditProperty():
-    '''
-    test function - to debug Edit property process
-    :return:
-    '''
-    new_struct = {
-        'MetadataType': 'Catalogs',
-        'MetadataName': 'Goods',
-        'ItemType': 'Attributes',
-        'PropertyName': 'Fullname',
-        'LevelType': '',
-        'LevelPropName': ''
-    }
-
-    new_struct = {
-        'MetadataType': 'Catalogs',
-        'MetadataName': 'Goods',
-        'ItemType': 'TabularSections',
-        'PropertyName': 'Goods',
-        'LevelType': 'Attributes',
-        'LevelPropName': 'Count'
-    }
 
     newVal = EditItem()
     # dd = {Name: 'sdsdsd', Value: 'sss', Path: 'mytree1.Catalogs.Goods.Attributes.weight', PropertyName: 'Type', res: ''}
@@ -677,9 +656,19 @@ if __name__ == '__main__':
     #create test date
     MD = Metadata.Metadata()
 
-    MD.Catalogs.CreateObject()
-    MD.Catalogs.CreateObject()
-    print('Catalogs=' + str(len(MD.Catalogs.Items)))
+    newItem = MD.Catalogs.CreateObject('Goods')
+    newAttr = newItem.Attributes.CreateObject('weight')
+
+    newItem = MD.Catalogs.CreateObject('Departments')
+    newAttr = newItem.Attributes.CreateObject('count')
+
+    newAttr = newItem.Attributes.get('count')
+    print(newAttr)
+
+    newAttr = newItem.SetProperty('Comment', 'Hello')
+
+    newForm = newItem.Forms.CreateObject()
+    #newForm.
 
 
     MD.Documents.CreateObject()
@@ -691,6 +680,15 @@ if __name__ == '__main__':
     print(MD.Catalogs)
     print(MD.Documents)
     print(MD.InformationRegisters)
+
+    print('Tree:')
+    #dd = myMetadata.GetTreeStructure()
+    dd = myMetadata.Catalogs.GetItemByName('Goods')
+    #dd = dd.GetTreeStructure()
+    print(dd)
+
+    #MD2 = Metadata.Metadata()
+    #print(MD2.Catalogs)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
 

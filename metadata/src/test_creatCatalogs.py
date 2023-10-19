@@ -23,11 +23,14 @@ class TestClass_Catalogs(unittest.TestCase):
 
     def test_case01_(self):
         '''Number of new catalogs'''
-        newCatalog1 = self.MD.Catalogs.CreateObject()
+        newCatalog1 = self.MD.Catalogs.CreateObject('Test1')
         self.assertEqual(len(self.MD.Catalogs.Items),1)
-        newCatalog2 = self.MD.Catalogs.CreateObject()
+        newCatalog2 = self.MD.Catalogs.CreateObject('Test+2')
         self.assertEqual(len(self.MD.Catalogs.Items),2)
 
     def test_case02_(self):
         '''new attribute'''
+
+        newItem = self.MD.Catalogs.getItemByName('Test1')
+        not self.assertEqual(newItem, -1)
 

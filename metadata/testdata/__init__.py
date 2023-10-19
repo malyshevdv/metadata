@@ -1,28 +1,37 @@
-import metadata.src.Catalogs as Catalogs
-import metadata.src.Documents as Documents
-import metadata.src.InformationRegisters as InformationRegisters
+import metadata.src.Metadata as Metadata
+import metadata.src.Types as Types
+
 
 def GetTestTree():
 
-    TestTree = {"Catalogs": {}, "Documents": {}, "InformationRegisters": {}}
+    #TestTree = {"Catalogs": {}, "Documents": {}, "InformationRegisters": {}}
 
-    #CATALOGS
-    newCatalog = Catalogs.CreateDemo('Goods')
-    TestTree['Catalogs']['Goods']= newCatalog
+    TestMD  = Metadata.Metadata()
 
-    newCatalog = Catalogs.CreateDemo('Cusomers')
-    TestTree['Catalogs']['Cusomers'] = newCatalog
+# NEW OOP model
 
-    #DOCUMENTS
+    newCatalogMD = TestMD.Catalogs.CreateObject('Goods')
+    newCatalogMD.Attributes.CreateObject('comment', Types.AttributeTypes.STRING_TYPE)
+    newCatalogMD.Attributes.CreateObject('weight', Types.AttributeTypes.NUMERIC_TYPE)
 
-    newDoc = Documents.CreateDemo('Invoice')
-    TestTree['Documents']['Invoice'] = newDoc
+    newTab = newCatalogMD.TabularSections.CreateObject('Colors')
+    newTab.Attributes.CreateObject('Good', Types.AttributeTypes.STRING_TYPE)
+    newTab.Attributes.CreateObject('Count', Types.AttributeTypes.NUMERIC_TYPE)
 
-    # information register
+    newCatalogMD.Forms.CreateObject('ObjectForm')
+    newCatalogMD.Commands.CreateObject('OpenCommand')
+    newCatalogMD.Templates.CreateObject('TemplateSchet')
 
-    newReg = InformationRegisters.CreateDemo('Curses')
-    TestTree['InformationRegisters']['Curses'] = newReg
+    newCatalogMD = TestMD.Catalogs.CreateObject('Customers')
+    newCatalogMD.Attributes.CreateObject('Adress', Types.AttributeTypes.STRING_TYPE)
+    newCatalogMD.Attributes.CreateObject('EMail', Types.AttributeTypes.STRING_TYPE)
 
 
-    return TestTree
+
+
+    newDocMD = TestMD.Documents.CreateObject('Invoice')
+
+    newRegMD = TestMD.InformationRegisters.CreateObject('Curses')
+
+    return TestMD
 

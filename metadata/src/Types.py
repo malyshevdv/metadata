@@ -4,6 +4,14 @@
 from sqlalchemy import String, NUMERIC, Integer, Boolean
 import metadata.src.Types as Types
 
+class AttributeTypes:
+    NUMERIC_TYPE = 'NUMERIC'
+    STRING_TYPE = 'String'
+    BOOLEAN_TYPE = 'Boolean'
+    INTEGER_TYPE = 'Integer'
+    DATETIME_TYPE = 'DateTime'
+
+
 NUMERIC_TYPE = 'NUMERIC'
 STRING_TYPE = 'String'
 BOOLEAN_TYPE = 'Boolean'
@@ -50,7 +58,6 @@ ATR_PROP_NAME_MaximumValue = 'MaximumValue'
 ATR_PROP_NAME_Autofill = 'Autofill'
 ATR_PROP_NAME_ReqiredField = 'ReqiredField'
 
-AttributePropertyList = {}
 
 AttributeTypeList = ['Number', 'String', 'Boolean']
 CodeTypeList = ['Number', 'String']
@@ -96,15 +103,23 @@ MetadataTypes = {
 
 
 def addProp(myOb, PropName, propType, DefValue, Selectable = False, SelectList = []):
-    myOb[PropName] = {
-            'Type': propType,
-            'DefaultValue': DefValue
-        }
-    if Selectable :
-        myOb[PropName]['Selectable'] = Selectable
-        myOb[PropName]['SelectList'] = SelectList
+    myOb[PropName] = PropertyItem(PropName, propType, DefValue, Selectable , SelectList)
 
+class PropertyItem:
+    def __init__(self, PropertyName, PropertyType, DefaultValue='', Selectable = False, SelectList=[]):
+        self.Name = PropertyName
+        self.SetType(PropertyType)
+        self.DefaultValue = DefaultValue
+        self.Selectable = Selectable
+        self.SelectList = SelectList
 
+    def GetSutableTypes(self):
+        return []
+
+    def SetType(self, PropertyType):
+        self.Type = PropertyType
+
+AttributePropertyList = {}
 addProp(AttributePropertyList, ATR_PROP_NAME_Name ,            STRING_TYPE, 'Catalog1')
 addProp(AttributePropertyList, ATR_PROP_NAME_Type ,            STRING_TYPE , Types.STRING_TYPE, True, AttributeTypeList)
 addProp(AttributePropertyList, ATR_PROP_NAME_DefaultValue ,    STRING_TYPE , '')
@@ -120,6 +135,259 @@ addProp(AttributePropertyList, ATR_PROP_NAME_MinimumValue ,    INTEGER_TYPE , 0)
 addProp(AttributePropertyList, ATR_PROP_NAME_MaximumValue ,    INTEGER_TYPE , 0)
 addProp(AttributePropertyList, ATR_PROP_NAME_Autofill ,        BOOLEAN_TYPE , False)
 addProp(AttributePropertyList, ATR_PROP_NAME_ReqiredField ,    BOOLEAN_TYPE , False)
+
+
+
+
+OB_PROP_NAME_Name = 'Name'
+OB_PROP_NAME_Synonyme = 'Synonyme'
+OB_PROP_NAME_Comment = 'Comment'
+OB_PROP_NAME_Hierarchical = 'Hierarchical'
+OB_PROP_NAME_HierarchyType = 'HierarchyType'
+OB_PROP_NAME_LimitNumberOfLevels = 'LimitNumberOfLevels'
+OB_PROP_NAME_NumberOfLevels = 'NumberOfLevels'
+OB_PROP_NAME_Owners = 'Owners'
+OB_PROP_NAME_CodeLength = 'CodeLength'
+OB_PROP_NAME_DescriptionLength = 'DescriptionLength'
+OB_PROP_NAME_CodeType = 'CodeType'
+
+OB_PROP_NAME_CheckUniqueness = 'CheckUniqueness'
+OB_PROP_NAME_Autonumbering = 'Autonumbering'
+OB_PROP_NAME_DefaultObjectForm = 'DefaultObjectForm'
+OB_PROP_NAME_DefaultFolderForm = 'DefaultFolderForm'
+OB_PROP_NAME_DefaultListForm = 'DefaultListForm'
+OB_PROP_NAME_DefaultChoiceForm = 'DefaultChoiceForm'
+
+
+
+
+CatalogPropertyList = {}
+
+addProp(CatalogPropertyList, OB_PROP_NAME_Name, Types.STRING_TYPE, 'Catalog1')
+addProp(CatalogPropertyList, OB_PROP_NAME_Synonyme, Types.STRING_TYPE , '')
+addProp(CatalogPropertyList, OB_PROP_NAME_Comment, Types.STRING_TYPE , 'Catalog1')
+addProp(CatalogPropertyList, OB_PROP_NAME_Hierarchical, Types.BOOLEAN_TYPE , False)
+addProp(CatalogPropertyList, OB_PROP_NAME_HierarchyType, Types.STRING_TYPE , '')
+addProp(CatalogPropertyList, OB_PROP_NAME_LimitNumberOfLevels, Types.BOOLEAN_TYPE ,False )
+addProp(CatalogPropertyList, OB_PROP_NAME_NumberOfLevels, Types.INTEGER_TYPE , 2 )
+addProp(CatalogPropertyList, OB_PROP_NAME_Owners, Types.STRING_TYPE , '')
+
+addProp(CatalogPropertyList, OB_PROP_NAME_CodeLength, Types.INTEGER_TYPE , 9)
+
+addProp(CatalogPropertyList, OB_PROP_NAME_DescriptionLength, Types.INTEGER_TYPE , 150)
+addProp(CatalogPropertyList, OB_PROP_NAME_CodeType, Types.STRING_TYPE , 'String', True, Types.CodeTypeList)
+addProp(CatalogPropertyList, OB_PROP_NAME_CheckUniqueness, Types.BOOLEAN_TYPE , True)
+addProp(CatalogPropertyList, OB_PROP_NAME_Autonumbering, Types.BOOLEAN_TYPE , True)
+addProp(CatalogPropertyList, OB_PROP_NAME_DefaultObjectForm, Types.STRING_TYPE , '')
+addProp(CatalogPropertyList, OB_PROP_NAME_DefaultFolderForm, Types.STRING_TYPE , '')
+addProp(CatalogPropertyList, OB_PROP_NAME_DefaultListForm, Types.STRING_TYPE , '')
+addProp(CatalogPropertyList, OB_PROP_NAME_DefaultChoiceForm, Types.STRING_TYPE , '')
+
+DocumentPropertyList = {
+
+    'Name': {
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': 'Catalog1'
+    },
+    'Synonyme': {
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    },
+    'Comment': {
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': 'Catalog1'
+    },
+
+    'Numerator': {
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    },
+    'NumeratorType': {
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    },
+    'NumeratorLength.': {
+        'Type': Types.INTEGER_TYPE,
+        'DefaultValue': 9
+    },
+
+    'Periodicity': {
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    },
+    'CheckUniqueness': {
+        'Type': Types.BOOLEAN_TYPE,
+        'DefaultValue': True
+    },
+    'NumberOfLevels': {
+        'Type': Types.INTEGER_TYPE,
+        'DefaultValue': 2
+
+    },
+    'Owners': {
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    },
+    'CodeLength': {
+        'Type': Types.INTEGER_TYPE,
+        'DefaultValue': 9
+    },
+    'DescriptionLength': {
+        'Type': Types.INTEGER_TYPE,
+        'DefaultValue': 150
+    },
+    'CodeType': {
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': 'String'
+    },
+    'CheckUniqueness': {
+        'Type': Types.BOOLEAN_TYPE,
+        'DefaultValue': True
+    },
+    'Autonumbering': {
+        'Type': Types.BOOLEAN_TYPE,
+        'DefaultValue': True
+    },
+    'DefaultObjectForm': {
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    },
+    'DefaultFolderForm': {
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    },
+    'DefaultListForm': {
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    },
+    'DefaultChoiceForm': {
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    }
+
+}
+
+InformationRegisterPropertyList = {
+            'Name': {
+                'Type': Types.STRING_TYPE,
+                'DefaultValue': 'Catalog1'
+            },
+            'Synonyme': {
+                'Type': Types.STRING_TYPE,
+                'DefaultValue': ''
+            },
+            'Comment': {
+                'Type': Types.STRING_TYPE,
+                'DefaultValue': 'Catalog1'
+            },
+
+            'Periodicity': {
+                'Type': Types.STRING_TYPE,
+                'DefaultValue': 'Nonperiodic'
+            },
+
+            'WriteMode': {
+                'Type': Types.STRING_TYPE,
+                'DefaultValue': 'Independent'
+            },
+
+            'MainFilterByPeriod': {
+                'Type': Types.BOOLEAN_TYPE,
+                'DefaultValue': False
+            },
+
+            'RecordEditingForm': {
+                'Type': Types.STRING_TYPE,
+                'DefaultValue': ''
+            },
+
+            'DefaultListForm': {
+                'Type': Types.STRING_TYPE,
+                'DefaultValue': 'Independent'
+            },
+
+            'Note': {
+                'Type': Types.STRING_TYPE,
+                'DefaultValue': ''
+            }
+        }
+
+TabularSectionPropertyList = {
+    'Name':{
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': 'Catalog1'
+    },
+    'Synonyme':{
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    },
+    'Comment':{
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': 'Catalog1'
+    }
+}
+
+FormPropertyList = {
+    'Name':{
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': 'Catalog1'
+    },
+    'Synonyme':{
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    },
+    'Comment':{
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': 'Catalog1'
+    }
+}
+
+BasicPropertyList = {
+    'Name':{
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': 'Catalog1'
+    },
+    'Synonyme':{
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    },
+    'Comment':{
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': 'Catalog1'
+    }
+}
+
+
+CommandsPropertyList = {
+    'Name':{
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': 'Command1'
+    },
+    'Synonyme':{
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': ''
+    },
+    'Comment':{
+        'Type': Types.STRING_TYPE,
+        'DefaultValue': 'Catalog1'
+    }
+}
+
+DimensionPropertyList = Types.AttributePropertyList
+DimensionPropertyList['Master'] = {
+        'Type': Types.BOOLEAN_TYPE,
+        'DefaultValue': False
+        }
+DimensionPropertyList['MainFilter'] = {
+        'Type': Types.BOOLEAN_TYPE,
+        'DefaultValue': False
+        }
+DimensionPropertyList['NoEmptyValues'] = {
+        'Type': Types.BOOLEAN_TYPE,
+        'DefaultValue': False
+        }
+
+ResoursesPropertyList = Types.AttributePropertyList
 
 
 def CreateNewAttribute_Number(Name : str):
