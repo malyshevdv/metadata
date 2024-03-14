@@ -16,7 +16,9 @@
 
 
 <script>
-  
+
+//import * from './metadata.js'    
+
 const portNumber = '8082'    
   
 
@@ -336,6 +338,11 @@ document.onkeydown = function(evt) {
     }
 };
 
+function MyHello(){
+    //alert('MyHello')
+    MyHelloTree()
+}
+
 </script>
 <noscript>Sorry, your browser does not support JavaScript!</noscript>
 
@@ -383,7 +390,7 @@ document.onkeydown = function(evt) {
                 </p>
                 <span id="ss">5</span>
                 <span id="prop_label">prop</span>
-                
+                <button onclick="MyHelloTree()">Hello</button>
             </fieldset>
         </div>
 

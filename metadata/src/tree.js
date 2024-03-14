@@ -1,4 +1,11 @@
-//import * from {/metadata/metadata}
+//import {MyHelloTree2} from "./src/metadata.js"
+//utils = require("./metadata");
+
+function MyHelloTree(){
+    const utils = await import("./src/metadata.js");
+    utils.MyHelloTree2();
+    //alert('MyHello from Tree') 
+}
 
 class Metadata{
 
@@ -206,6 +213,9 @@ function drawMenuButton(parentContainer, CommandName, ShowTitle = true){
     parentContainer.appendChild(menu_bar_item);
 
 }
+
+
+
 
 function RedrawTree(myTree) {
 
