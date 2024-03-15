@@ -114,6 +114,12 @@ export default function PropertyGorisontal() {
     setRowModesModel(newRowModesModel);
   };
 
+
+  const onNodeSelect = (event: React.SyntheticEvent, nodeIds: Array<string> | string) => {
+
+    console.log('Hello')
+  }
+
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Name', width: 180, editable: true },
     {
@@ -209,6 +215,7 @@ export default function PropertyGorisontal() {
         //onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
         processRowUpdate={processRowUpdate}
+        
         //slots={{
         //  toolbar: EditToolbar,
         //}}

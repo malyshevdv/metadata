@@ -129,6 +129,22 @@ const CustomTreeItem = React.forwardRef(function CustomTreeItem(
   return <TreeItem ContentComponent={CustomContent} {...props} ref={ref} />;
 });
 
+
+const handleChange = (event, nodeId) => {
+  /*
+  treeViewArr.forEach((treeRoot) => {
+    if(treeRoot.id === nodeId){
+      setSelectedRoot(treeRoot);
+      setSelectedNode(treeRoot);
+      return
+    }
+
+    handleSelectedNode(treeRoot.childNodes, treeRoot, nodeId);
+  });
+  */
+};
+
+
 export default function BarTreeView() {
   return (
     <Box sx={{ minHeight: 180, flexGrow: 1, maxWidth: 300 }}>
@@ -136,6 +152,7 @@ export default function BarTreeView() {
         aria-label="icon expansion"
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
+        onNodeSelect={handleChange}
         sx={{ position: 'relative' }}
       >
         <CustomTreeItem nodeId="Applications" label="Applications">
