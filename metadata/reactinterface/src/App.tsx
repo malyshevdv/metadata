@@ -13,7 +13,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import { MyProperty } from './components/property';
+import { PropertyVertical} from './components/property_vertical';
 import PropertyGorisontal from './components/property_gorisontal';
 
 const drawerWidth = 256;
@@ -23,6 +23,8 @@ function App() {
   //const { ...other } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+
+  const [currentTreeId, setCurrentTreeId] = React.useState('Applications')
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -85,39 +87,26 @@ function App() {
       </AppBar>
 
 
-        <Box
-          component="nav"
-          sx={{ 
-            width: { sm: drawerWidth }, 
-            flex: 0,
-            textAlign: 'left',
-          }}
-        >
-          <p>metadata</p>
-          <BarTreeView></BarTreeView>
+       
+       <BarTreeView  currentTreeId={currentTreeId} setCurrentTreeId = {setCurrentTreeId} ></BarTreeView>
     
-
-
-        </Box>
-
-        <Box sx={{ 
+        <Box 
+          sx={{ 
           flex: 1, 
           display: 'flex', 
           flexDirection: 'column',  
           width: '100%'  
           }}>
           
+          
+
           <Box component="main" sx={{ flex: 1, py: 6, px: 4, bgcolor: '#eaeff1' , textAlign: 'left',}}>
-            <p>main</p>
-           <PropertyGorisontal></PropertyGorisontal>
+            
+            <PropertyVertical currentTreeId={currentTreeId}></PropertyVertical>
+
+           
 
           </Box>
-
-          <Box component="footer" sx={{ p: 2, bgcolor: '#eaeff1' }}>
-            <p>FOOTER</p>
-          </Box>
-
-
 
         </Box>
       </Box>
