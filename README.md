@@ -19,7 +19,10 @@ It will generate Django application modules.
 Python development tool - Backend (Python-FastAPI) + Frontend (JS-HTML-CSS), for describing common real-world objects as a database model with minimal programming.
 
 First look at new interface
+
 Left side  - my clear JS-interface
+
 Right side - original 1C enterprise interface that inspired me to work
+
 ![image](https://github.com/malyshevdv/metadata_editor/assets/56846927/6164d535-c2c4-4eae-85b2-c43c39bb31c1)
 
