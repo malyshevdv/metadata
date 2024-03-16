@@ -21,5 +21,5 @@ Python development tool - Backend (Python-FastAPI) + Frontend (JS-HTML-CSS), for
 First look at new interface
 Left side  - my clear JS-interface
 Right side - original 1C enterprise interface that inspired me to work
-![image](https://github.com/malyshevdv/metadata_editor/assets/56846927/acae38b4-5eee-4ef1-bd73-889b0774b0eb)
+![image](https://github.com/malyshevdv/metadata_editor/assets/56846927/6164d535-c2c4-4eae-85b2-c43c39bb31c1)
 
