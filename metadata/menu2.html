@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    
+     
+</head>
+
+<script>
+
+function printHello(myStr){
+    console.log(myStr);
+    myPony = '';
+    for (let myIndex=0; myIndex < myStr.length; myIndex++){
+        console.log(myIndex);
+        myCandidat = ''
+        nextIndex = 0;
+        nextStep = myIndex + nextIndex;
+        while (nextStep < myStr.length) {
+            nextStep = myIndex + nextIndex;
+            myCandidat = myCandidat + myStr[nextStep];
+
+            rev = myCandidat.split('').reverse().join('');
+            console.log(rev);
+            if (myCandidat == rev) {
+                if (myPony.length < myCandidat.length) {
+                    myPony = myCandidat;
+                }    
+            }
+            nextIndex +=1;
+        }
+    }
+    
+    console.log('RESULT='+myPony)
+
+}
+    
+
+
+    printHello('dfdsff1234554321dfdfdfdfd');
+    </script>
+
+
+<body>
+Hello    
+</body>
+</html>

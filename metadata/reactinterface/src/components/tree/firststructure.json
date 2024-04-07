@@ -1,0 +1,23 @@
+[
+    {
+        "Application": "MyApp3",
+        "Catalogs": [
+            {
+                "type": "Catalog",
+                "name": "Book",
+                "properties": [],
+                "tabulars": [],
+                "forms": [],
+                "templates": [],
+                "commands": []
+            },
+            {
+                "type": "Catalog",
+                "name": "Boxes",
+                "properties": [],
+                "templates": [],
+                "commands": []
+            }
+        ]
+    }
+]
